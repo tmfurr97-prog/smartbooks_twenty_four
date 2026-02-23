@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Upload, FileText, Trash2, Download, Loader2, CloudUpload } from "lucide-react";
+import { Upload, FileText, Trash2, Download, Loader2, CloudUpload, Brain, AlertTriangle } from "lucide-react";
 import { format } from "date-fns";
 
 const CATEGORIES = [
@@ -15,10 +15,14 @@ const CATEGORIES = [
   { value: "receipt", label: "Receipt" },
   { value: "id", label: "ID / License" },
   { value: "expense", label: "Business Expense" },
+  { value: "bank_statement", label: "Bank Statement" },
+  { value: "tax_return", label: "Tax Return" },
+  { value: "insurance", label: "Insurance" },
+  { value: "investment", label: "Investment" },
   { value: "other", label: "Other" },
 ];
 
-const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
+const MAX_FILE_SIZE = 20 * 1024 * 1024;
 const ACCEPTED_TYPES = [
   "application/pdf",
   "image/jpeg",
@@ -35,6 +39,14 @@ function formatFileSize(bytes: number) {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
+async function hashFile(file: File): Promise<string> {
+  const buffer = await file.arrayBuffer();
+  const hashBuffer = await crypto.subtle.digest("SHA-256", buffer);
+  return Array.from(new Uint8Array(hashBuffer))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
 export default function Documents() {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -42,6 +54,7 @@ export default function Documents() {
   const [dragOver, setDragOver] = useState(false);
   const [category, setCategory] = useState("other");
   const [uploading, setUploading] = useState(false);
+  const [analyzing, setAnalyzing] = useState(false);
 
   const { data: documents = [], isLoading } = useQuery({
     queryKey: ["documents", user?.id],
@@ -62,7 +75,6 @@ export default function Documents() {
         .from("documents")
         .remove([doc.storage_path]);
       if (storageError) throw storageError;
-
       const { error: dbError } = await supabase
         .from("documents")
         .delete()
@@ -93,6 +105,62 @@ export default function Documents() {
           continue;
         }
 
+        // Step 1: Hash the file for duplicate detection
+        setAnalyzing(true);
+        let fileHash = "";
+        try {
+          fileHash = await hashFile(file);
+        } catch {
+          // continue without hash
+        }
+
+        // Step 2: Call AI analysis
+        let aiCategory = category;
+        let suggestedName = file.name;
+        let isDuplicate = false;
+        let duplicateOf: string | null = null;
+
+        try {
+          const { data: session } = await supabase.auth.getSession();
+          const resp = await fetch(
+            `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/analyze-document`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${session?.session?.access_token ?? import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+              },
+              body: JSON.stringify({
+                file_name: file.name,
+                file_size: file.size,
+                file_type: file.type,
+                file_hash: fileHash,
+              }),
+            }
+          );
+
+          if (resp.ok) {
+            const analysis = await resp.json();
+            aiCategory = analysis.ai_category || category;
+            suggestedName = analysis.suggested_name || file.name;
+            isDuplicate = analysis.is_duplicate;
+            duplicateOf = analysis.duplicate_of;
+          }
+        } catch {
+          // Fallback: upload without AI
+        }
+        setAnalyzing(false);
+
+        // Step 3: Warn on duplicate
+        if (isDuplicate) {
+          toast({
+            title: "Duplicate detected",
+            description: `This file matches "${duplicateOf}". Uploading anyway.`,
+            variant: "destructive",
+          });
+        }
+
+        // Step 4: Upload
         setUploading(true);
         const timestamp = Date.now();
         const storagePath = `${user.id}/${timestamp}_${file.name}`;
@@ -108,12 +176,18 @@ export default function Documents() {
             file_name: file.name,
             file_size: file.size,
             file_type: file.type,
-            category,
+            category: aiCategory,
             storage_path: storagePath,
+            file_hash: fileHash || null,
+            ai_category: aiCategory,
+            suggested_name: suggestedName,
           });
           if (dbError) throw dbError;
 
-          toast({ title: `${file.name} uploaded successfully` });
+          toast({
+            title: `${file.name} uploaded`,
+            description: `Auto-categorized as ${CATEGORIES.find((c) => c.value === aiCategory)?.label ?? aiCategory}`,
+          });
         } catch {
           toast({ title: `Failed to upload ${file.name}`, variant: "destructive" });
         }
@@ -150,6 +224,8 @@ export default function Documents() {
     [handleUpload]
   );
 
+  const isProcessing = uploading || analyzing;
+
   return (
     <div className="space-y-8">
       <div>
@@ -157,7 +233,7 @@ export default function Documents() {
           Documents
         </h1>
         <p className="text-muted-foreground">
-          Upload and manage your tax documents securely.
+          Upload and manage your tax documents — AI handles sorting and naming.
         </p>
       </div>
 
@@ -165,7 +241,7 @@ export default function Documents() {
       <Card className="p-6 space-y-4">
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-end">
           <div className="space-y-1.5 w-full sm:w-48">
-            <label className="text-sm font-medium text-foreground">Category</label>
+            <label className="text-sm font-medium text-foreground">Fallback Category</label>
             <Select value={category} onValueChange={setCategory}>
               <SelectTrigger>
                 <SelectValue />
@@ -179,6 +255,10 @@ export default function Documents() {
               </SelectContent>
             </Select>
           </div>
+          <p className="text-xs text-muted-foreground pb-2">
+            <Brain className="w-3.5 h-3.5 inline-block mr-1 text-accent" />
+            AI will auto-detect the category for you
+          </p>
         </div>
 
         <div
@@ -186,25 +266,31 @@ export default function Documents() {
           onDragLeave={() => setDragOver(false)}
           onDrop={onDrop}
           className={`relative flex flex-col items-center justify-center gap-3 p-10 rounded-xl border-2 border-dashed transition-colors cursor-pointer ${
-            dragOver
-              ? "border-accent bg-accent/10"
-              : "border-border hover:border-accent/50"
+            dragOver ? "border-accent bg-accent/10" : "border-border hover:border-accent/50"
           }`}
-          onClick={() => document.getElementById("file-input")?.click()}
+          onClick={() => !isProcessing && document.getElementById("file-input")?.click()}
         >
-          {uploading ? (
-            <Loader2 className="w-10 h-10 text-accent animate-spin" />
+          {analyzing ? (
+            <>
+              <Brain className="w-10 h-10 text-accent animate-pulse" />
+              <p className="text-muted-foreground text-center text-sm">Analyzing document with AI…</p>
+            </>
+          ) : uploading ? (
+            <>
+              <Loader2 className="w-10 h-10 text-accent animate-spin" />
+              <p className="text-muted-foreground text-center text-sm">Uploading…</p>
+            </>
           ) : (
-            <CloudUpload className="w-10 h-10 text-muted-foreground" />
+            <>
+              <CloudUpload className="w-10 h-10 text-muted-foreground" />
+              <p className="text-muted-foreground text-center text-sm">
+                Drag & drop files here, or click to browse
+              </p>
+              <p className="text-muted-foreground/60 text-xs">
+                PDF, JPG, PNG, WEBP, Excel, CSV — up to 20 MB
+              </p>
+            </>
           )}
-          <p className="text-muted-foreground text-center text-sm">
-            {uploading
-              ? "Uploading…"
-              : "Drag & drop files here, or click to browse"}
-          </p>
-          <p className="text-muted-foreground/60 text-xs">
-            PDF, JPG, PNG, WEBP, Excel, CSV — up to 20 MB
-          </p>
           <input
             id="file-input"
             type="file"
@@ -231,15 +317,21 @@ export default function Documents() {
         </Card>
       ) : (
         <div className="space-y-3">
-          {documents.map((doc) => (
+          {documents.map((doc: any) => (
             <Card key={doc.id} className="p-4 flex items-center gap-4">
               <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
                 <FileText className="w-5 h-5 text-accent" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-medium text-foreground truncate">{doc.file_name}</p>
+                {doc.suggested_name && doc.suggested_name !== doc.file_name && (
+                  <p className="text-xs text-accent truncate flex items-center gap-1">
+                    <Brain className="w-3 h-3" />
+                    {doc.suggested_name}
+                  </p>
+                )}
                 <p className="text-xs text-muted-foreground">
-                  {CATEGORIES.find((c) => c.value === doc.category)?.label ?? doc.category} ·{" "}
+                  {CATEGORIES.find((c) => c.value === (doc.ai_category || doc.category))?.label ?? doc.category} ·{" "}
                   {formatFileSize(doc.file_size)} ·{" "}
                   {format(new Date(doc.created_at), "MMM d, yyyy")}
                 </p>

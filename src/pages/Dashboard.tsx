@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Upload, MessageSquare, FileText, ExternalLink } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import DocumentChecklist from "@/components/DocumentChecklist";
 
 const stats = [
   { icon: FileText, label: "Documents", value: "0", desc: "Uploaded" },
@@ -60,16 +61,20 @@ export default function Dashboard() {
         </Card>
       </a>
 
-      <Card className="border-border">
-        <CardHeader>
-          <CardTitle className="font-heading text-lg">Getting Started</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3 text-sm text-muted-foreground">
-          <p>1. Upload your tax documents (W-2s, 1099s, receipts, IDs)</p>
-          <p>2. Send a message to your preparer with any questions</p>
-          <p>3. Check your refund status anytime via the IRS link above</p>
-        </CardContent>
-      </Card>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <DocumentChecklist />
+        <Card className="border-border">
+          <CardHeader>
+            <CardTitle className="font-heading text-lg">Getting Started</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3 text-sm text-muted-foreground">
+            <p>1. Upload your tax documents — AI will sort and name them</p>
+            <p>2. Check the document checklist for missing items</p>
+            <p>3. Send a message to your preparer with any questions</p>
+            <p>4. Check your refund status anytime via the IRS link above</p>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
