@@ -7,12 +7,7 @@ export default function HeroSection() {
     <section className="relative min-h-[90vh] flex items-center overflow-hidden">
       {/* Background image with overlay */}
       <div className="absolute inset-0">
-        <img
-          src={heroBg}
-          alt=""
-          className="w-full h-full object-cover"
-          loading="eager"
-        />
+        <img src={heroBg} alt="" className="w-full h-full object-cover" loading="eager" />
         <div className="absolute inset-0 bg-gradient-hero opacity-80" />
       </div>
 
@@ -22,12 +17,14 @@ export default function HeroSection() {
             SmartBooks by ReFurrm
           </p>
           <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground leading-tight mb-6 animate-fade-in-up">
-            Secure Storage. Real Support.{" "}
-            <span className="text-gradient-gold">Stress Free Filing.</span>
+            Secure Storage. Real Support. <span className="text-gradient-gold">Stress Free Filing.</span>
           </h1>
-          <p className="text-lg md:text-xl text-primary-foreground/80 mb-10 leading-relaxed animate-fade-in-up" style={{ animationDelay: "150ms" }}>
-            Your secure, year‑round taxx and document hub. Upload documents, chat with your
-            preparer, and get your taxxes filed remotely — with confidence.
+          <p
+            className="text-lg md:text-xl text-primary-foreground/80 mb-10 leading-relaxed animate-fade-in-up"
+            style={{ animationDelay: "150ms" }}
+          >
+            Your secure, year‑round tax and document hub. Upload documents, chat with your preparer, and get your taxes
+            filed remotely — with confidence.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-up" style={{ animationDelay: "300ms" }}>
             <Button variant="hero" size="lg" asChild>
