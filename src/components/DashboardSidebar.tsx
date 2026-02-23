@@ -21,7 +21,12 @@ const navItems = [
   { icon: FolderLock, label: "Vault", path: "/dashboard/vault" },
 ];
 
-export default function DashboardSidebar() {
+interface DashboardSidebarProps {
+  mobile?: boolean;
+  onNavigate?: () => void;
+}
+
+export default function DashboardSidebar({ mobile, onNavigate }: DashboardSidebarProps = {}) {
   const location = useLocation();
   const navigate = useNavigate();
   const { signOut, profile } = useAuth();
@@ -31,8 +36,17 @@ export default function DashboardSidebar() {
     navigate("/");
   };
 
+  const handleNav = () => {
+    onNavigate?.();
+  };
+
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-64 bg-black-deep border-r border-sidebar-border hidden lg:flex flex-col">
+    <aside className={cn(
+      "w-64 bg-black-deep border-r border-sidebar-border flex flex-col",
+      mobile
+        ? "h-full"
+        : "fixed left-0 top-0 bottom-0 hidden lg:flex"
+    )}>
       <div className="p-6">
         <Link to="/" className="font-heading text-xl font-bold text-sidebar-foreground">
           Smart<span className="text-gradient-gold">Books</span>
@@ -46,6 +60,7 @@ export default function DashboardSidebar() {
             <Link
               key={item.path}
               to={item.path}
+              onClick={handleNav}
               className={cn(
                 "flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors",
                 active
