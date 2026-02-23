@@ -4,8 +4,6 @@ import {
   Upload,
   MessageSquare,
   Bot,
-  Video,
-  FolderLock,
   Users,
   CreditCard,
   Car,
@@ -14,6 +12,10 @@ import {
   User,
   LogOut,
   Receipt,
+  Shield,
+  Send,
+  Database,
+  HeartPulse,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
@@ -24,13 +26,15 @@ const navItems = [
   { icon: CreditCard, label: "Transactions", path: "/dashboard/transactions" },
   { icon: Link2, label: "Matching", path: "/dashboard/matching" },
   { icon: Car, label: "Mileage & Vehicle", path: "/dashboard/mileage" },
+  { icon: Receipt, label: "Quarterly Taxes", path: "/dashboard/quarterly-taxes" },
   { icon: MessageSquare, label: "Messages", path: "/dashboard/messages" },
   { icon: Bot, label: "AI Assistant", path: "/dashboard/ai" },
   { icon: Users, label: "Collaboration", path: "/dashboard/collaboration" },
   { icon: ClipboardCheck, label: "Year-End Checklist", path: "/dashboard/checklist" },
-  { icon: Receipt, label: "Quarterly Taxes", path: "/dashboard/quarterly-taxes" },
-  { icon: Video, label: "Meetings", path: "/dashboard/meetings" },
-  { icon: FolderLock, label: "Vault", path: "/dashboard/vault" },
+  { icon: Shield, label: "Audit Defense", path: "/dashboard/audit-defense" },
+  { icon: Send, label: "E-File", path: "/dashboard/efile" },
+  { icon: Database, label: "Backups", path: "/dashboard/backups" },
+  { icon: HeartPulse, label: "Health Check", path: "/dashboard/health-check" },
 ];
 
 interface DashboardSidebarProps {
