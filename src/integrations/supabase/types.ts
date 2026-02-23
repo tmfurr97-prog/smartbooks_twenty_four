@@ -16,38 +16,47 @@ export type Database = {
     Tables: {
       documents: {
         Row: {
+          ai_category: string | null
           category: string
           created_at: string
+          file_hash: string | null
           file_name: string
           file_size: number
           file_type: string
           id: string
           notes: string | null
           storage_path: string
+          suggested_name: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
+          ai_category?: string | null
           category?: string
           created_at?: string
+          file_hash?: string | null
           file_name: string
           file_size: number
           file_type: string
           id?: string
           notes?: string | null
           storage_path: string
+          suggested_name?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
+          ai_category?: string | null
           category?: string
           created_at?: string
+          file_hash?: string | null
           file_name?: string
           file_size?: number
           file_type?: string
           id?: string
           notes?: string | null
           storage_path?: string
+          suggested_name?: string | null
           updated_at?: string
           user_id?: string
         }
