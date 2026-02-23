@@ -38,7 +38,7 @@ export default function Dashboard() {
 
       {/* IRS Refund Status card */}
       <a
-        href="https://www.irs.gov/refunds"
+        href="https://www.irs.gov/wheres-my-refund"
         target="_blank"
         rel="noopener noreferrer"
         className="block mb-10"
