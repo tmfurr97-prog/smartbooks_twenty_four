@@ -11,7 +11,7 @@ const stats = [
 
 export default function Dashboard() {
   const { profile } = useAuth();
-  const greeting = profile?.first_name ? , ${profile.first_name} : "Welcome to the SmartHUb";
+  const greeting = profile?.first_name ? `Welcome, ${profile.first_name}` : "Welcome to the SmartHub";
 
   return (
     <div>
