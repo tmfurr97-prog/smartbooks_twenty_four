@@ -19,6 +19,13 @@ import TransactionMatching from "./pages/TransactionMatching";
 import Mileage from "./pages/Mileage";
 import YearEndChecklist from "./pages/YearEndChecklist";
 import QuarterlyTaxes from "./pages/QuarterlyTaxes";
+import AuditDefense from "./pages/AuditDefense";
+import EFile from "./pages/EFile";
+import Backups from "./pages/Backups";
+import HealthCheck from "./pages/HealthCheck";
+import BlogList from "./pages/BlogList";
+import BlogPost from "./pages/BlogPost";
+import Features from "./pages/Features";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +41,9 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/features" element={<Features />} />
+            <Route path="/blog" element={<BlogList />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
             <Route
               path="/dashboard"
               element={
@@ -52,6 +62,10 @@ const App = () => (
               <Route path="collaboration" element={<Collaboration />} />
               <Route path="checklist" element={<YearEndChecklist />} />
               <Route path="quarterly-taxes" element={<QuarterlyTaxes />} />
+              <Route path="audit-defense" element={<AuditDefense />} />
+              <Route path="efile" element={<EFile />} />
+              <Route path="backups" element={<Backups />} />
+              <Route path="health-check" element={<HealthCheck />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
