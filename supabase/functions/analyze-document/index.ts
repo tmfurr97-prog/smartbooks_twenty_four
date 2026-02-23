@@ -14,13 +14,14 @@ serve(async (req) => {
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) throw new Error("Missing authorization");
 
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_PUBLISHABLE_KEY")!,
-      { global: { headers: { Authorization: authHeader } } }
-    );
+    const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_PUBLISHABLE_KEY")!, {
+      global: { headers: { Authorization: authHeader } },
+    });
 
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
     if (authError || !user) throw new Error("Unauthorized");
 
     const { file_name, file_size, file_type, file_hash } = await req.json();
@@ -56,7 +57,7 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: `You are a taxx document classifier. Given a file name, size, and type, determine:
+            content: `You are a tax document classifier. Given a file name, size, and type, determine:
 1. The best category for this document
 2. A clean, human-readable suggested name
 
@@ -74,13 +75,24 @@ For the suggested name, create something like "2025 W-2 - Employer Name" or "Rec
             type: "function",
             function: {
               name: "classify_document",
-              description: "Classify and suggest a name for a taxx document",
+              description: "Classify and suggest a name for a tax document",
               parameters: {
                 type: "object",
                 properties: {
                   category: {
                     type: "string",
-                    enum: ["w2", "1099", "receipt", "id", "expense", "bank_statement", "tax_return", "insurance", "investment", "other"],
+                    enum: [
+                      "w2",
+                      "1099",
+                      "receipt",
+                      "id",
+                      "expense",
+                      "bank_statement",
+                      "tax_return",
+                      "insurance",
+                      "investment",
+                      "other",
+                    ],
                   },
                   suggested_name: { type: "string" },
                   confidence: { type: "number", description: "0-1 confidence score" },
@@ -99,23 +111,28 @@ For the suggested name, create something like "2025 W-2 - Employer Name" or "Rec
       const status = aiResponse.status;
       if (status === 429) {
         return new Response(JSON.stringify({ error: "Rate limited, please try again shortly." }), {
-          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 429,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
       if (status === 402) {
         return new Response(JSON.stringify({ error: "AI credits exhausted." }), {
-          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 402,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
       console.error("AI error:", status, await aiResponse.text());
       // Fallback: return without AI classification
-      return new Response(JSON.stringify({
-        ai_category: "other",
-        suggested_name: file_name,
-        confidence: 0,
-        is_duplicate: isDuplicate,
-        duplicate_of: duplicateOf,
-      }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      return new Response(
+        JSON.stringify({
+          ai_category: "other",
+          suggested_name: file_name,
+          confidence: 0,
+          is_duplicate: isDuplicate,
+          duplicate_of: duplicateOf,
+        }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
     }
 
     const aiData = await aiResponse.json();
@@ -124,20 +141,26 @@ For the suggested name, create something like "2025 W-2 - Employer Name" or "Rec
     if (toolCall?.function?.arguments) {
       try {
         classification = JSON.parse(toolCall.function.arguments);
-      } catch { /* use defaults */ }
+      } catch {
+        /* use defaults */
+      }
     }
 
-    return new Response(JSON.stringify({
-      ai_category: classification.category,
-      suggested_name: classification.suggested_name,
-      confidence: classification.confidence,
-      is_duplicate: isDuplicate,
-      duplicate_of: duplicateOf,
-    }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    return new Response(
+      JSON.stringify({
+        ai_category: classification.category,
+        suggested_name: classification.suggested_name,
+        confidence: classification.confidence,
+        is_duplicate: isDuplicate,
+        duplicate_of: duplicateOf,
+      }),
+      { headers: { ...corsHeaders, "Content-Type": "application/json" } },
+    );
   } catch (e) {
     console.error("analyze-document error:", e);
     return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 });
