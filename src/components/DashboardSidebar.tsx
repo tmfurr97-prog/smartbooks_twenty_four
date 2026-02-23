@@ -16,6 +16,8 @@ import {
   Send,
   Database,
   HeartPulse,
+  Building2,
+  Bitcoin,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
@@ -35,6 +37,8 @@ const navItems = [
   { icon: Send, label: "E-File", path: "/dashboard/efile" },
   { icon: Database, label: "Backups", path: "/dashboard/backups" },
   { icon: HeartPulse, label: "Health Check", path: "/dashboard/health-check" },
+  { icon: Building2, label: "Business Entities", path: "/dashboard/business-entities" },
+  { icon: Bitcoin, label: "Crypto Taxes", path: "/dashboard/crypto-taxes" },
 ];
 
 interface DashboardSidebarProps {

@@ -23,6 +23,8 @@ import AuditDefense from "./pages/AuditDefense";
 import EFile from "./pages/EFile";
 import Backups from "./pages/Backups";
 import HealthCheck from "./pages/HealthCheck";
+import BusinessEntities from "./pages/BusinessEntities";
+import CryptoTaxes from "./pages/CryptoTaxes";
 import BlogList from "./pages/BlogList";
 import BlogPost from "./pages/BlogPost";
 import Features from "./pages/Features";
@@ -66,6 +68,8 @@ const App = () => (
               <Route path="efile" element={<EFile />} />
               <Route path="backups" element={<Backups />} />
               <Route path="health-check" element={<HealthCheck />} />
+              <Route path="business-entities" element={<BusinessEntities />} />
+              <Route path="crypto-taxes" element={<CryptoTaxes />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
