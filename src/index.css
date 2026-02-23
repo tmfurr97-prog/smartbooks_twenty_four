@@ -9,10 +9,10 @@
 
 @layer base {
   :root {
-    --background: transparent;
-    --foreground: 0 0% 92%;
+    --background: 0 0% 4%;
+    --foreground: 0 74.6835% 15.4902%;
 
-    --card: transparent;
+    --card: 150 20% 10%;
     --card-foreground: 0 0% 92%;
 
     --popover: 150 20% 10%;
@@ -22,7 +22,7 @@
     --primary-foreground: 45 100% 96%;
 
     --secondary: 150 12% 14%;
-    --secondary-foreground: 0 0% 90%;
+    --secondary-foreground: 0 74.6835% 15.4902%;
 
     --muted: 150 10% 14%;
     --muted-foreground: 0 0% 55%;
