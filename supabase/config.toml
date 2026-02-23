@@ -3,8 +3,5 @@ project_id = "lbwnplgambxrwkswftoc"
 [functions.analyze-document]
 verify_jwt = false
 
-[functions.taxx-assistant]
-verify_jwt = false
-
-[functions.send-quarterly-tax-reminders]
+[functions.tax-assistant]
 verify_jwt = false
