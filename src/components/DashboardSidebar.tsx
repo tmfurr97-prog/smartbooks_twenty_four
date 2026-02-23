@@ -7,6 +7,10 @@ import {
   Video,
   FolderLock,
   Users,
+  CreditCard,
+  Car,
+  ClipboardCheck,
+  Link2,
   User,
   LogOut,
 } from "lucide-react";
@@ -16,11 +20,15 @@ import { useAuth } from "@/hooks/useAuth";
 const navItems = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
   { icon: Upload, label: "Documents", path: "/dashboard/documents" },
+  { icon: CreditCard, label: "Transactions", path: "/dashboard/transactions" },
+  { icon: Link2, label: "Matching", path: "/dashboard/matching" },
+  { icon: Car, label: "Mileage & Vehicle", path: "/dashboard/mileage" },
   { icon: MessageSquare, label: "Messages", path: "/dashboard/messages" },
   { icon: Bot, label: "AI Assistant", path: "/dashboard/ai" },
+  { icon: Users, label: "Collaboration", path: "/dashboard/collaboration" },
+  { icon: ClipboardCheck, label: "Year-End Checklist", path: "/dashboard/checklist" },
   { icon: Video, label: "Meetings", path: "/dashboard/meetings" },
   { icon: FolderLock, label: "Vault", path: "/dashboard/vault" },
-  { icon: Users, label: "Collaboration", path: "/dashboard/collaboration" },
 ];
 
 interface DashboardSidebarProps {
@@ -55,7 +63,7 @@ export default function DashboardSidebar({ mobile, onNavigate }: DashboardSideba
         </Link>
       </div>
 
-      <nav className="flex-1 px-3 space-y-1">
+      <nav className="flex-1 px-3 space-y-1 overflow-y-auto">
         {navItems.map((item) => {
           const active = location.pathname === item.path;
           return (

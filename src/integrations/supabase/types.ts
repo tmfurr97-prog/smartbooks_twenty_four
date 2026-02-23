@@ -83,6 +83,54 @@ export type Database = {
         }
         Relationships: []
       }
+      mileage_trips: {
+        Row: {
+          created_at: string
+          distance_miles: number
+          end_location: string
+          id: string
+          is_round_trip: boolean
+          notes: string | null
+          purpose: string | null
+          start_lat: number | null
+          start_lng: number | null
+          start_location: string
+          trip_date: string
+          trip_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          distance_miles?: number
+          end_location: string
+          id?: string
+          is_round_trip?: boolean
+          notes?: string | null
+          purpose?: string | null
+          start_lat?: number | null
+          start_lng?: number | null
+          start_location: string
+          trip_date?: string
+          trip_type?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          distance_miles?: number
+          end_location?: string
+          id?: string
+          is_round_trip?: boolean
+          notes?: string | null
+          purpose?: string | null
+          start_lat?: number | null
+          start_lng?: number | null
+          start_location?: string
+          trip_date?: string
+          trip_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -113,6 +161,90 @@ export type Database = {
         }
         Relationships: []
       }
+      tax_professional_access: {
+        Row: {
+          access_level: string
+          created_at: string
+          id: string
+          professional_email: string
+          professional_name: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          access_level?: string
+          created_at?: string
+          id?: string
+          professional_email: string
+          professional_name: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          access_level?: string
+          created_at?: string
+          id?: string
+          professional_email?: string
+          professional_name?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      transactions: {
+        Row: {
+          amount: number
+          category: string
+          created_at: string
+          date: string
+          id: string
+          is_tax_deductible: boolean
+          merchant_name: string | null
+          name: string
+          needs_review: boolean
+          notes: string | null
+          receipt_url: string | null
+          tax_category: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount?: number
+          category?: string
+          created_at?: string
+          date?: string
+          id?: string
+          is_tax_deductible?: boolean
+          merchant_name?: string | null
+          name: string
+          needs_review?: boolean
+          notes?: string | null
+          receipt_url?: string | null
+          tax_category?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          category?: string
+          created_at?: string
+          date?: string
+          id?: string
+          is_tax_deductible?: boolean
+          merchant_name?: string | null
+          name?: string
+          needs_review?: boolean
+          notes?: string | null
+          receipt_url?: string | null
+          tax_category?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
@@ -128,6 +260,39 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      vehicle_expenses: {
+        Row: {
+          amount: number
+          created_at: string
+          description: string | null
+          expense_date: string
+          expense_type: string
+          id: string
+          user_id: string
+          vendor: string | null
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          description?: string | null
+          expense_date?: string
+          expense_type?: string
+          id?: string
+          user_id: string
+          vendor?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          description?: string | null
+          expense_date?: string
+          expense_type?: string
+          id?: string
+          user_id?: string
+          vendor?: string | null
         }
         Relationships: []
       }
