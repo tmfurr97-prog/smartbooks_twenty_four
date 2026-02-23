@@ -16,7 +16,7 @@ const CATEGORIES = [
   { value: "id", label: "ID / License" },
   { value: "expense", label: "Business Expense" },
   { value: "bank_statement", label: "Bank Statement" },
-  { value: "tax_return", label: "Taxx Return" },
+  { value: "tax_return", label: "tax Return" },
   { value: "insurance", label: "Insurance" },
   { value: "investment", label: "Investment" },
   { value: "other", label: "Other" },
@@ -59,10 +59,7 @@ export default function Documents() {
   const { data: documents = [], isLoading } = useQuery({
     queryKey: ["documents", user?.id],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("documents")
-        .select("*")
-        .order("created_at", { ascending: false });
+      const { data, error } = await supabase.from("documents").select("*").order("created_at", { ascending: false });
       if (error) throw error;
       return data;
     },
@@ -71,14 +68,9 @@ export default function Documents() {
 
   const deleteMutation = useMutation({
     mutationFn: async (doc: { id: string; storage_path: string }) => {
-      const { error: storageError } = await supabase.storage
-        .from("documents")
-        .remove([doc.storage_path]);
+      const { error: storageError } = await supabase.storage.from("documents").remove([doc.storage_path]);
       if (storageError) throw storageError;
-      const { error: dbError } = await supabase
-        .from("documents")
-        .delete()
-        .eq("id", doc.id);
+      const { error: dbError } = await supabase.from("documents").delete().eq("id", doc.id);
       if (dbError) throw dbError;
     },
     onSuccess: () => {
@@ -122,22 +114,19 @@ export default function Documents() {
 
         try {
           const { data: session } = await supabase.auth.getSession();
-          const resp = await fetch(
-            `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/analyze-document`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${session?.session?.access_token ?? import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-              },
-              body: JSON.stringify({
-                file_name: file.name,
-                file_size: file.size,
-                file_type: file.type,
-                file_hash: fileHash,
-              }),
-            }
-          );
+          const resp = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/analyze-document`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${session?.session?.access_token ?? import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+            },
+            body: JSON.stringify({
+              file_name: file.name,
+              file_size: file.size,
+              file_type: file.type,
+              file_hash: fileHash,
+            }),
+          });
 
           if (resp.ok) {
             const analysis = await resp.json();
@@ -166,9 +155,7 @@ export default function Documents() {
         const storagePath = `${user.id}/${timestamp}_${file.name}`;
 
         try {
-          const { error: uploadError } = await supabase.storage
-            .from("documents")
-            .upload(storagePath, file);
+          const { error: uploadError } = await supabase.storage.from("documents").upload(storagePath, file);
           if (uploadError) throw uploadError;
 
           const { error: dbError } = await supabase.from("documents").insert({
@@ -196,13 +183,11 @@ export default function Documents() {
       setUploading(false);
       queryClient.invalidateQueries({ queryKey: ["documents"] });
     },
-    [user, category, toast, queryClient]
+    [user, category, toast, queryClient],
   );
 
   const handleDownload = async (storagePath: string, fileName: string) => {
-    const { data, error } = await supabase.storage
-      .from("documents")
-      .download(storagePath);
+    const { data, error } = await supabase.storage.from("documents").download(storagePath);
     if (error || !data) {
       toast({ title: "Download failed", variant: "destructive" });
       return;
@@ -221,7 +206,7 @@ export default function Documents() {
       setDragOver(false);
       if (e.dataTransfer.files.length) handleUpload(e.dataTransfer.files);
     },
-    [handleUpload]
+    [handleUpload],
   );
 
   const isProcessing = uploading || analyzing;
@@ -229,12 +214,8 @@ export default function Documents() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-2">
-          Documents
-        </h1>
-        <p className="text-muted-foreground">
-          Upload and manage your taxx documents — AI handles sorting and naming.
-        </p>
+        <h1 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-2">Documents</h1>
+        <p className="text-muted-foreground">Upload and manage your tax documents — AI handles sorting and naming.</p>
       </div>
 
       {/* Upload area */}
@@ -262,7 +243,10 @@ export default function Documents() {
         </div>
 
         <div
-          onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+          onDragOver={(e) => {
+            e.preventDefault();
+            setDragOver(true);
+          }}
           onDragLeave={() => setDragOver(false)}
           onDrop={onDrop}
           className={`relative flex flex-col items-center justify-center gap-3 p-10 rounded-xl border-2 border-dashed transition-colors cursor-pointer ${
@@ -283,12 +267,8 @@ export default function Documents() {
           ) : (
             <>
               <CloudUpload className="w-10 h-10 text-muted-foreground" />
-              <p className="text-muted-foreground text-center text-sm">
-                Drag & drop files here, or click to browse
-              </p>
-              <p className="text-muted-foreground/60 text-xs">
-                PDF, JPG, PNG, WEBP, Excel, CSV — up to 20 MB
-              </p>
+              <p className="text-muted-foreground text-center text-sm">Drag & drop files here, or click to browse</p>
+              <p className="text-muted-foreground/60 text-xs">PDF, JPG, PNG, WEBP, Excel, CSV — up to 20 MB</p>
             </>
           )}
           <input
@@ -332,8 +312,7 @@ export default function Documents() {
                 )}
                 <p className="text-xs text-muted-foreground">
                   {CATEGORIES.find((c) => c.value === (doc.ai_category || doc.category))?.label ?? doc.category} ·{" "}
-                  {formatFileSize(doc.file_size)} ·{" "}
-                  {format(new Date(doc.created_at), "MMM d, yyyy")}
+                  {formatFileSize(doc.file_size)} · {format(new Date(doc.created_at), "MMM d, yyyy")}
                 </p>
               </div>
               <div className="flex gap-2 shrink-0">
