@@ -30,10 +30,7 @@ export default function Messages() {
   const { data: messages = [], isLoading } = useQuery({
     queryKey: ["messages", user?.id],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("messages")
-        .select("*")
-        .order("created_at", { ascending: true });
+      const { data, error } = await supabase.from("messages").select("*").order("created_at", { ascending: true });
       if (error) throw error;
 
       // Fetch sender profiles
@@ -43,9 +40,7 @@ export default function Messages() {
         .select("user_id, first_name, last_name")
         .in("user_id", senderIds);
 
-      const profileMap = new Map(
-        (profiles ?? []).map((p) => [p.user_id, p])
-      );
+      const profileMap = new Map((profiles ?? []).map((p) => [p.user_id, p]));
 
       return data.map((m) => ({
         ...m,
@@ -59,13 +54,9 @@ export default function Messages() {
   useEffect(() => {
     const channel = supabase
       .channel("messages-realtime")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "messages" },
-        () => {
-          queryClient.invalidateQueries({ queryKey: ["messages"] });
-        }
-      )
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages" }, () => {
+        queryClient.invalidateQueries({ queryKey: ["messages"] });
+      })
       .subscribe();
 
     return () => {
@@ -118,12 +109,8 @@ export default function Messages() {
   return (
     <div className="flex flex-col h-[calc(100vh-7rem)] lg:h-[calc(100vh-5rem)]">
       <div className="mb-6">
-        <h1 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-2">
-          Messages
-        </h1>
-        <p className="text-muted-foreground">
-          Chat directly with your taxx preparer.
-        </p>
+        <h1 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-2">Messages</h1>
+        <p className="text-muted-foreground">Chat directly with your tax preparer.</p>
       </div>
 
       {/* Messages area */}
@@ -136,31 +123,20 @@ export default function Messages() {
           ) : messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-center">
               <MessageSquare className="w-10 h-10 text-muted-foreground mb-3" />
-              <p className="text-muted-foreground">
-                No messages yet. Send a message to get started.
-              </p>
+              <p className="text-muted-foreground">No messages yet. Send a message to get started.</p>
             </div>
           ) : (
             messages.map((msg) => {
               const isOwn = msg.sender_id === user?.id;
               return (
-                <div
-                  key={msg.id}
-                  className={`flex ${isOwn ? "justify-end" : "justify-start"}`}
-                >
+                <div key={msg.id} className={`flex ${isOwn ? "justify-end" : "justify-start"}`}>
                   <div
                     className={`max-w-[80%] sm:max-w-[70%] rounded-xl px-4 py-3 ${
-                      isOwn
-                        ? "bg-accent text-accent-foreground"
-                        : "bg-secondary text-secondary-foreground"
+                      isOwn ? "bg-accent text-accent-foreground" : "bg-secondary text-secondary-foreground"
                     }`}
                   >
-                    <p className="text-xs font-medium opacity-70 mb-1">
-                      {getSenderName(msg)}
-                    </p>
-                    <p className="text-sm whitespace-pre-wrap break-words">
-                      {msg.content}
-                    </p>
+                    <p className="text-xs font-medium opacity-70 mb-1">{getSenderName(msg)}</p>
+                    <p className="text-sm whitespace-pre-wrap break-words">{msg.content}</p>
                     <p className="text-[10px] opacity-50 mt-1.5 text-right">
                       {format(new Date(msg.created_at), "MMM d, h:mm a")}
                     </p>
@@ -189,16 +165,10 @@ export default function Messages() {
               size="icon"
               className="shrink-0 bg-accent hover:bg-accent/90 text-accent-foreground"
             >
-              {sendMutation.isPending ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <Send className="w-4 h-4" />
-              )}
+              {sendMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
             </Button>
           </div>
-          <p className="text-[11px] text-muted-foreground mt-2">
-            Press Enter to send · Shift+Enter for a new line
-          </p>
+          <p className="text-[11px] text-muted-foreground mt-2">Press Enter to send · Shift+Enter for a new line</p>
         </div>
       </Card>
     </div>
