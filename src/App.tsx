@@ -10,6 +10,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import DashboardLayout from "./pages/DashboardLayout";
 import Dashboard from "./pages/Dashboard";
+import Documents from "./pages/Documents";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ const App = () => (
               }
             >
               <Route index element={<Dashboard />} />
+              <Route path="documents" element={<Documents />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
