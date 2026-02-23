@@ -62,6 +62,51 @@ export type Database = {
         }
         Relationships: []
       }
+      estimated_tax_payments: {
+        Row: {
+          created_at: string
+          due_date: string
+          estimated_amount: number
+          id: string
+          paid_amount: number | null
+          paid_date: string | null
+          quarter: number
+          reminder_sent: boolean
+          status: string
+          updated_at: string
+          user_id: string
+          year: number
+        }
+        Insert: {
+          created_at?: string
+          due_date: string
+          estimated_amount?: number
+          id?: string
+          paid_amount?: number | null
+          paid_date?: string | null
+          quarter: number
+          reminder_sent?: boolean
+          status?: string
+          updated_at?: string
+          user_id: string
+          year: number
+        }
+        Update: {
+          created_at?: string
+          due_date?: string
+          estimated_amount?: number
+          id?: string
+          paid_amount?: number | null
+          paid_date?: string | null
+          quarter?: number
+          reminder_sent?: boolean
+          status?: string
+          updated_at?: string
+          user_id?: string
+          year?: number
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           content: string

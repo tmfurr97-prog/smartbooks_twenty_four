@@ -13,6 +13,7 @@ import {
   Link2,
   User,
   LogOut,
+  Receipt,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
@@ -27,6 +28,7 @@ const navItems = [
   { icon: Bot, label: "AI Assistant", path: "/dashboard/ai" },
   { icon: Users, label: "Collaboration", path: "/dashboard/collaboration" },
   { icon: ClipboardCheck, label: "Year-End Checklist", path: "/dashboard/checklist" },
+  { icon: Receipt, label: "Quarterly Taxes", path: "/dashboard/quarterly-taxes" },
   { icon: Video, label: "Meetings", path: "/dashboard/meetings" },
   { icon: FolderLock, label: "Vault", path: "/dashboard/vault" },
 ];
