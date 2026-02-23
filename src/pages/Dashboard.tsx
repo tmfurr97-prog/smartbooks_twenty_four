@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Upload, MessageSquare, FileText, CheckCircle } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 const stats = [
   { icon: FileText, label: "Documents", value: "0", desc: "Uploaded" },
@@ -9,10 +10,13 @@ const stats = [
 ];
 
 export default function Dashboard() {
+  const { profile } = useAuth();
+  const greeting = profile?.first_name ? `Welcome back, ${profile.first_name} 👋` : "Welcome back 👋";
+
   return (
     <div>
       <h1 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-2">
-        Welcome back 👋
+        {greeting}
       </h1>
       <p className="text-muted-foreground mb-8">
         Here's an overview of your tax preparation progress.
