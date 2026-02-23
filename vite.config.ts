@@ -28,8 +28,8 @@ export default defineConfig(({ mode }) => ({
         short_name: "SmartBooks",
         description:
           "Your secure, year-round tax and document management hub. Upload documents, chat with your preparer, and file taxes remotely.",
-        theme_color: "#0b1225",
-        background_color: "#0b1225",
+        theme_color: "#0a0a0a",
+        background_color: "#0a0a0a",
         display: "standalone",
         orientation: "portrait",
         start_url: "/",

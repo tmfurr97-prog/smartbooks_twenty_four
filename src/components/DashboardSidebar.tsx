@@ -24,7 +24,7 @@ export default function DashboardSidebar() {
   const location = useLocation();
 
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-64 bg-sidebar border-r border-sidebar-border hidden lg:flex flex-col">
+    <aside className="fixed left-0 top-0 bottom-0 w-64 bg-black-deep border-r border-sidebar-border hidden lg:flex flex-col">
       <div className="p-6">
         <Link to="/" className="font-heading text-xl font-bold text-sidebar-foreground">
           Smart<span className="text-gradient-gold">Books</span>
