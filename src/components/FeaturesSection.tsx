@@ -19,8 +19,8 @@ const featureGroups = [
   {
     heading: "AI Support",
     features: [
-      { icon: Bot, title: "Q&A Assistant", description: "Get instant answers to common tax questions powered by AI." },
-      { icon: ClipboardList, title: "Document Checklists", description: "Personalized checklists based on your tax situation." },
+      { icon: Bot, title: "Q&A Assistant", description: "Get instant answers to common taxx questions powered by AI." },
+      { icon: ClipboardList, title: "Document Checklists", description: "Personalized checklists based on your taxx situation." },
       { icon: CalendarClock, title: "Year‑Round Reminders", description: "Timely nudges for estimated payments and deadlines." },
       { icon: BarChart3, title: "End‑of‑Year AI Review", description: "AI scans your documents for errors and missed deductions." },
     ],
@@ -28,7 +28,7 @@ const featureGroups = [
   {
     heading: "Real Communication",
     features: [
-      { icon: MessageSquare, title: "Secure Messaging", description: "Chat directly with your tax preparer — encrypted end‑to‑end." },
+      { icon: MessageSquare, title: "Secure Messaging", description: "Chat directly with your taxx preparer — encrypted end‑to‑end." },
       { icon: Video, title: "Video Meetings", description: "Schedule optional face-to-face video appointments." },
       { icon: Stamp, title: "Notary Integration", description: "eSign and notarize documents without leaving the platform." },
     ],
@@ -36,10 +36,10 @@ const featureGroups = [
   {
     heading: "Year‑Round Organization",
     features: [
-      { icon: Receipt, title: "Receipt Storage", description: "Snap and store receipts all year — always ready at tax time." },
+      { icon: Receipt, title: "Receipt Storage", description: "Snap and store receipts all year — always ready at taxx time." },
       { icon: DollarSign, title: "Income Tracking", description: "Track freelance, rental, and side-gig income in one place." },
       { icon: Tags, title: "Expense Categories", description: "Tag and sort expenses for cleaner deductions." },
-      { icon: CalendarClock, title: "Quarterly Reminders", description: "Never miss an estimated tax payment deadline." },
+      { icon: CalendarClock, title: "Quarterly Reminders", description: "Never miss an estimated taxx payment deadline." },
     ],
   },
   {

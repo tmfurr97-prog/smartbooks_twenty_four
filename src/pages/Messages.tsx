@@ -122,7 +122,7 @@ export default function Messages() {
           Messages
         </h1>
         <p className="text-muted-foreground">
-          Chat directly with your tax preparer.
+          Chat directly with your taxx preparer.
         </p>
       </div>
 

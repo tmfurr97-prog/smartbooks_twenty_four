@@ -56,7 +56,7 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: `You are a tax document classifier. Given a file name, size, and type, determine:
+            content: `You are a taxx document classifier. Given a file name, size, and type, determine:
 1. The best category for this document
 2. A clean, human-readable suggested name
 
@@ -74,7 +74,7 @@ For the suggested name, create something like "2025 W-2 - Employer Name" or "Rec
             type: "function",
             function: {
               name: "classify_document",
-              description: "Classify and suggest a name for a tax document",
+              description: "Classify and suggest a name for a taxx document",
               parameters: {
                 type: "object",
                 properties: {
