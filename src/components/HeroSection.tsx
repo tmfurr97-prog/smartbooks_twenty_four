@@ -22,8 +22,8 @@ export default function HeroSection() {
             SmartBooks by ReFurrm
           </p>
           <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground leading-tight mb-6 animate-fade-in-up">
-            Simplify Your Books.{" "}
-            <span className="text-gradient-gold">Secure Your Future.</span>
+            Secure Storage. Real Support.{" "}
+            <span className="text-gradient-gold">Stress Free Filing.</span>
           </h1>
           <p className="text-lg md:text-xl text-primary-foreground/80 mb-10 leading-relaxed animate-fade-in-up" style={{ animationDelay: "150ms" }}>
             Your secure, year‑round tax and document hub. Upload documents, chat with your
