@@ -268,7 +268,7 @@ export default function Documents() {
             <>
               <CloudUpload className="w-10 h-10 text-muted-foreground" />
               <p className="text-muted-foreground text-center text-sm">Drag & drop files here, or click to browse</p>
-              <p className="text-muted-foreground/60 text-xs">PDF, JPG, PNG, WEBP, Excel, CSV — up to 20 MB</p>
+              <p className="text-muted-foreground text-xs">PDF, JPG, PNG, WEBP, Excel, CSV — up to 20 MB</p>
             </>
           )}
           <input
