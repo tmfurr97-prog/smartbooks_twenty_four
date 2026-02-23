@@ -8,11 +8,11 @@ import ReactMarkdown from "react-markdown";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
-const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/taxx-assistant`;
+const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/tax-assistant`;
 
 const quickQuestions = [
-  "What documents do I need to file my taxxes?",
-  "When is the taxx filing deadline?",
+  "What documents do I need to file my taxes?",
+  "When is the tax filing deadline?",
   "What's the difference between W-2 and 1099?",
   "What deductions can I claim?",
 ];
@@ -129,9 +129,9 @@ export default function AIAssistant() {
   return (
     <div className="flex flex-col h-[calc(100vh-7rem)]">
       <div className="mb-4">
-        <h1 className="font-heading text-2xl md:text-3xl font-bold text-foreground">AI Taxx Assistant</h1>
+        <h1 className="font-heading text-2xl md:text-3xl font-bold text-foreground">AI tax Assistant</h1>
         <p className="text-muted-foreground text-sm mt-1">
-          Ask common taxx questions — powered by AI. Not a substitute for professional advice.
+          Ask common tax questions — powered by AI. Not a substitute for professional advice.
         </p>
       </div>
 
@@ -144,7 +144,7 @@ export default function AIAssistant() {
                 <Bot className="w-7 h-7 text-accent" />
               </div>
               <div>
-                <p className="font-heading text-lg font-semibold text-foreground">How can I help with your taxxes?</p>
+                <p className="font-heading text-lg font-semibold text-foreground">How can I help with your taxes?</p>
                 <p className="text-muted-foreground text-sm mt-1">Try one of these questions to get started:</p>
               </div>
               <div className="flex flex-wrap gap-2 justify-center max-w-lg">
@@ -170,9 +170,7 @@ export default function AIAssistant() {
               )}
               <div
                 className={`max-w-[80%] rounded-xl px-4 py-3 text-sm ${
-                  msg.role === "user"
-                    ? "bg-accent text-accent-foreground"
-                    : "bg-secondary text-foreground"
+                  msg.role === "user" ? "bg-accent text-accent-foreground" : "bg-secondary text-foreground"
                 }`}
               >
                 {msg.role === "assistant" ? (
@@ -198,9 +196,18 @@ export default function AIAssistant() {
               </div>
               <div className="bg-secondary rounded-xl px-4 py-3">
                 <div className="flex gap-1">
-                  <span className="w-2 h-2 rounded-full bg-muted-foreground animate-bounce" style={{ animationDelay: "0ms" }} />
-                  <span className="w-2 h-2 rounded-full bg-muted-foreground animate-bounce" style={{ animationDelay: "150ms" }} />
-                  <span className="w-2 h-2 rounded-full bg-muted-foreground animate-bounce" style={{ animationDelay: "300ms" }} />
+                  <span
+                    className="w-2 h-2 rounded-full bg-muted-foreground animate-bounce"
+                    style={{ animationDelay: "0ms" }}
+                  />
+                  <span
+                    className="w-2 h-2 rounded-full bg-muted-foreground animate-bounce"
+                    style={{ animationDelay: "150ms" }}
+                  />
+                  <span
+                    className="w-2 h-2 rounded-full bg-muted-foreground animate-bounce"
+                    style={{ animationDelay: "300ms" }}
+                  />
                 </div>
               </div>
             </div>
@@ -219,7 +226,7 @@ export default function AIAssistant() {
             <Textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask a taxx question..."
+              placeholder="Ask a tax question..."
               className="min-h-[44px] max-h-32 resize-none"
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
