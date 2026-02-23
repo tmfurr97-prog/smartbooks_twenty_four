@@ -25,7 +25,7 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: `You are the SmartBooks Taxx Assistant — a friendly, knowledgeable AI that answers common taxx questions for individuals and small businesses. Keep answers clear, concise, and actionable. Use plain language, not legal jargon. Always remind users that your answers are informational only and not a substitute for professional taxx advice. Cover topics like deductions, filing deadlines, W-2 vs 1099, estimated taxxes, credits, refund status, and general taxx preparation tips. If you don't know something or it requires specific personal financial analysis, recommend they message their preparer through SmartBooks.`,
+            content: `You are the SmartBooks tax Assistant — a friendly, knowledgeable AI that answers common tax questions for individuals and small businesses. Keep answers clear, concise, and actionable. Use plain language, not legal jargon. Always remind users that your answers are informational only and not a substitute for professional tax advice. Cover topics like deductions, filing deadlines, W-2 vs 1099, estimated taxes, credits, refund status, and general tax preparation tips. If you don't know something or it requires specific personal financial analysis, recommend they message their preparer through SmartBooks.`,
           },
           ...messages,
         ],
@@ -58,7 +58,7 @@ serve(async (req) => {
       headers: { ...corsHeaders, "Content-Type": "text/event-stream" },
     });
   } catch (e) {
-    console.error("taxx-assistant error:", e);
+    console.error("tax-assistant error:", e);
     return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
