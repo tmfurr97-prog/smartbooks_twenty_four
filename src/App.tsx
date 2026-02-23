@@ -14,6 +14,10 @@ import Documents from "./pages/Documents";
 import Messages from "./pages/Messages";
 import AIAssistant from "./pages/AIAssistant";
 import Collaboration from "./pages/Collaboration";
+import Transactions from "./pages/Transactions";
+import TransactionMatching from "./pages/TransactionMatching";
+import Mileage from "./pages/Mileage";
+import YearEndChecklist from "./pages/YearEndChecklist";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -39,9 +43,13 @@ const App = () => (
             >
               <Route index element={<Dashboard />} />
               <Route path="documents" element={<Documents />} />
+              <Route path="transactions" element={<Transactions />} />
+              <Route path="matching" element={<TransactionMatching />} />
+              <Route path="mileage" element={<Mileage />} />
               <Route path="messages" element={<Messages />} />
               <Route path="ai" element={<AIAssistant />} />
               <Route path="collaboration" element={<Collaboration />} />
+              <Route path="checklist" element={<YearEndChecklist />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
