@@ -9,7 +9,7 @@
 
 @layer base {
   :root {
-    --background: inherit;
+    --background: transparent;
     --foreground: 0 0% 92%;
 
     --card: 150 20% 10%;
