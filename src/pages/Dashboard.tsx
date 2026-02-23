@@ -1,12 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Upload, MessageSquare, FileText, CheckCircle } from "lucide-react";
+import { Upload, MessageSquare, FileText, ExternalLink } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
 const stats = [
   { icon: FileText, label: "Documents", value: "0", desc: "Uploaded" },
   { icon: MessageSquare, label: "Messages", value: "0", desc: "Unread" },
   { icon: Upload, label: "Pending", value: "0", desc: "Awaiting review" },
-  { icon: CheckCircle, label: "Status", value: "—", desc: "Return status" },
 ];
 
 export default function Dashboard() {
@@ -37,6 +36,30 @@ export default function Dashboard() {
         ))}
       </div>
 
+      {/* IRS Refund Status card */}
+      <a
+        href="https://www.irs.gov/refunds"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block mb-10"
+      >
+        <Card className="border-border hover:border-gold/30 transition-colors group cursor-pointer">
+          <CardContent className="flex items-center gap-4 py-5">
+            <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
+              <ExternalLink className="w-5 h-5 text-accent" />
+            </div>
+            <div className="flex-1">
+              <p className="font-medium text-foreground group-hover:text-accent transition-colors">
+                Check Your Refund Status
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Visit IRS.gov to track your federal tax refund in real time.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </a>
+
       <Card className="border-border">
         <CardHeader>
           <CardTitle className="font-heading text-lg">Getting Started</CardTitle>
@@ -44,7 +67,7 @@ export default function Dashboard() {
         <CardContent className="space-y-3 text-sm text-muted-foreground">
           <p>1. Upload your tax documents (W-2s, 1099s, receipts, IDs)</p>
           <p>2. Send a message to your preparer with any questions</p>
-          <p>3. Track your return status right here on the dashboard</p>
+          <p>3. Check your refund status anytime via the IRS link above</p>
         </CardContent>
       </Card>
     </div>
