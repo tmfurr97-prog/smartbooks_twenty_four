@@ -40,11 +40,10 @@ export default function FeaturesSection() {
         <div className="text-center mb-16">
           <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-4">
             Everything You Need,{" "}
-            <span className="text-gradient-gold">In One Secure Place</span>
+            <span className="text-gradient-gold">In One Place</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            From uploading your documents to filing your return — SmartBooks keeps you organized,
-            connected, and confident.
+            SmartBooks guides you from upload to filing — with confidence.
           </p>
         </div>
 
