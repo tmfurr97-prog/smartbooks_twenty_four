@@ -13,6 +13,7 @@ import Dashboard from "./pages/Dashboard";
 import Documents from "./pages/Documents";
 import Messages from "./pages/Messages";
 import AIAssistant from "./pages/AIAssistant";
+import Collaboration from "./pages/Collaboration";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -40,6 +41,7 @@ const App = () => (
               <Route path="documents" element={<Documents />} />
               <Route path="messages" element={<Messages />} />
               <Route path="ai" element={<AIAssistant />} />
+              <Route path="collaboration" element={<Collaboration />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

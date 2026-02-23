@@ -6,6 +6,7 @@ import {
   Bot,
   Video,
   FolderLock,
+  Users,
   User,
   LogOut,
 } from "lucide-react";
@@ -19,6 +20,7 @@ const navItems = [
   { icon: Bot, label: "AI Assistant", path: "/dashboard/ai" },
   { icon: Video, label: "Meetings", path: "/dashboard/meetings" },
   { icon: FolderLock, label: "Vault", path: "/dashboard/vault" },
+  { icon: Users, label: "Collaboration", path: "/dashboard/collaboration" },
 ];
 
 interface DashboardSidebarProps {
