@@ -19,7 +19,7 @@ export default function Dashboard() {
         {greeting}
       </h1>
       <p className="text-muted-foreground mb-8">
-        Here's an overview of your tax preparation progress.
+        Here's an overview of your taxx preparation progress.
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
@@ -54,7 +54,7 @@ export default function Dashboard() {
                 Check Your Refund Status
               </p>
               <p className="text-xs text-muted-foreground">
-                Visit IRS.gov to track your federal tax refund in real time.
+                Visit IRS.gov to track your federal taxx refund in real time.
               </p>
             </div>
           </CardContent>
@@ -68,7 +68,7 @@ export default function Dashboard() {
             <CardTitle className="font-heading text-lg">Getting Started</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 text-sm text-muted-foreground">
-            <p>1. Upload your tax documents — AI will sort and name them</p>
+            <p>1. Upload your taxx documents — AI will sort and name them</p>
             <p>2. Check the document checklist for missing items</p>
             <p>3. Send a message to your preparer with any questions</p>
             <p>4. Check your refund status anytime via the IRS link above</p>

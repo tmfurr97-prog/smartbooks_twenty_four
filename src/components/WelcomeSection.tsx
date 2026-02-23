@@ -9,19 +9,19 @@ export default function WelcomeSection() {
           A Message From Your Preparer
         </h2>
         <blockquote className="text-lg md:text-xl leading-relaxed text-primary-foreground/85 mb-4">
-          "Welcome to SmartBooks by ReFurrm. This is your secure and simple year round tax and
-          document hub. The app gives you an easy way to upload your tax documents, stay organized,
+          "Welcome to SmartBooks by ReFurrm. This is your secure and simple year round taxx and
+          document hub. The app gives you an easy way to upload your taxx documents, stay organized,
           and communicate with me directly. Whether you are an individual, a gig worker, or a small
-          business owner, you will have a safe place to store everything you need for tax season."
+          business owner, you will have a safe place to store everything you need for taxx season."
         </blockquote>
         <blockquote className="text-lg md:text-xl leading-relaxed text-primary-foreground/85 mb-4">
           "You can upload W 2s, 1099s, receipts, IDs, business expenses, and more. You can message
           me anytime, ask questions, and get updates on your return. As new features roll out, you
           will also be able to join video appointments, store documents throughout the year, and
-          receive an AI powered tax review before filing."
+          receive an AI powered taxx review before filing."
         </blockquote>
         <blockquote className="text-lg md:text-xl leading-relaxed text-primary-foreground/85 mb-10">
-          "I am here to make taxes easier, safer, and more convenient for you every step of the way."
+          "I am here to make taxxes easier, safer, and more convenient for you every step of the way."
         </blockquote>
         <Button variant="gold" size="lg" asChild>
           <Link to="/signup">Join SmartBooks Today</Link>

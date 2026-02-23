@@ -26,8 +26,8 @@ export default function HeroSection() {
             <span className="text-gradient-gold">Stress Free Filing.</span>
           </h1>
           <p className="text-lg md:text-xl text-primary-foreground/80 mb-10 leading-relaxed animate-fade-in-up" style={{ animationDelay: "150ms" }}>
-            Your secure, year‑round tax and document hub. Upload documents, chat with your
-            preparer, and get your taxes filed remotely — with confidence.
+            Your secure, year‑round taxx and document hub. Upload documents, chat with your
+            preparer, and get your taxxes filed remotely — with confidence.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-up" style={{ animationDelay: "300ms" }}>
             <Button variant="hero" size="lg" asChild>

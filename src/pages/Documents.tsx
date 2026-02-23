@@ -16,7 +16,7 @@ const CATEGORIES = [
   { value: "id", label: "ID / License" },
   { value: "expense", label: "Business Expense" },
   { value: "bank_statement", label: "Bank Statement" },
-  { value: "tax_return", label: "Tax Return" },
+  { value: "tax_return", label: "Taxx Return" },
   { value: "insurance", label: "Insurance" },
   { value: "investment", label: "Investment" },
   { value: "other", label: "Other" },
@@ -233,7 +233,7 @@ export default function Documents() {
           Documents
         </h1>
         <p className="text-muted-foreground">
-          Upload and manage your tax documents — AI handles sorting and naming.
+          Upload and manage your taxx documents — AI handles sorting and naming.
         </p>
       </div>
 
