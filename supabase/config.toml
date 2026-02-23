@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.taxx-assistant]
 verify_jwt = false
+
+[functions.send-quarterly-tax-reminders]
+verify_jwt = false

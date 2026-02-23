@@ -18,6 +18,7 @@ import Transactions from "./pages/Transactions";
 import TransactionMatching from "./pages/TransactionMatching";
 import Mileage from "./pages/Mileage";
 import YearEndChecklist from "./pages/YearEndChecklist";
+import QuarterlyTaxes from "./pages/QuarterlyTaxes";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -50,6 +51,7 @@ const App = () => (
               <Route path="ai" element={<AIAssistant />} />
               <Route path="collaboration" element={<Collaboration />} />
               <Route path="checklist" element={<YearEndChecklist />} />
+              <Route path="quarterly-taxes" element={<QuarterlyTaxes />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
