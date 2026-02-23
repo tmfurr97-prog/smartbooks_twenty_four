@@ -11,7 +11,7 @@ export default function DashboardLayout() {
       <DashboardSidebar />
 
       {/* Mobile header */}
-      <header className="lg:hidden fixed top-0 left-0 right-0 z-50 h-14 bg-sidebar border-b border-sidebar-border flex items-center px-4 gap-3">
+      <header className="lg:hidden fixed top-0 left-0 right-0 z-50 h-14 bg-black-deep border-b border-sidebar-border flex items-center px-4 gap-3">
         <button onClick={() => setMobileOpen(!mobileOpen)} aria-label="Menu">
           <Menu className="w-6 h-6 text-sidebar-foreground" />
         </button>

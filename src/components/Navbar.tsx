@@ -7,7 +7,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-navy-deep/90 backdrop-blur-md border-b border-border/20">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-black-deep/90 backdrop-blur-md border-b border-border/20">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <Link to="/" className="font-heading text-xl font-bold text-primary-foreground">
           Smart<span className="text-gradient-gold">Books</span>
@@ -37,7 +37,7 @@ export default function Navbar() {
 
       {/* Mobile nav */}
       {open && (
-        <nav className="md:hidden bg-navy-deep border-t border-border/20 px-4 py-4 flex flex-col gap-3">
+        <nav className="md:hidden bg-black-deep border-t border-border/20 px-4 py-4 flex flex-col gap-3">
           <a href="#features" className="text-primary-foreground/70 hover:text-gold py-2" onClick={() => setOpen(false)}>Features</a>
           <Link to="/pricing" className="text-primary-foreground/70 hover:text-gold py-2" onClick={() => setOpen(false)}>Pricing</Link>
           <Link to="/login" onClick={() => setOpen(false)}>

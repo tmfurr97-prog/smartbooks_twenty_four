@@ -65,11 +65,9 @@ export default {
           DEFAULT: "hsl(var(--gold))",
           foreground: "hsl(var(--gold-foreground))",
         },
-        navy: {
-          DEFAULT: "hsl(var(--navy))",
-          deep: "hsl(var(--navy-deep))",
-          light: "hsl(var(--navy-light))",
-        },
+        "black-deep": "hsl(var(--black-deep))",
+        "black-surface": "hsl(var(--black-surface))",
+        "black-elevated": "hsl(var(--black-elevated))",
         success: {
           DEFAULT: "hsl(var(--success))",
           foreground: "hsl(var(--success-foreground))",

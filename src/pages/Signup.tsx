@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 export default function Signup() {
   return (
     <div className="min-h-screen bg-gradient-hero flex items-center justify-center px-4">
-      <Card className="w-full max-w-md border-border/30 shadow-navy">
+      <Card className="w-full max-w-md border-border/30 shadow-dark">
         <CardHeader className="text-center">
           <Link to="/" className="font-heading text-2xl font-bold text-foreground mb-2 inline-block">
             Smart<span className="text-gradient-gold">Books</span>
