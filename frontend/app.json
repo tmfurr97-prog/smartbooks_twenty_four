@@ -81,7 +81,8 @@
         {
           "locationAlwaysAndWhenInUsePermission": "Find verified outdoor stays near you."
         }
-      ]
+      ],
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true
