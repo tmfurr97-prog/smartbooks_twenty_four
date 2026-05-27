@@ -42,7 +42,7 @@ export default function Transactions() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: async ({ id, updates }: { id: string; updates: Record<string, any> }) => {
+    mutationFn: async ({ id, updates }: { id: string; updates: Partial<Database['public']['Tables']['transactions']['Update']> }) => {
       const { error } = await supabase.from('transactions').update(updates).eq('id', id);
       if (error) throw error;
     },
