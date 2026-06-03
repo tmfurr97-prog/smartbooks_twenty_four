@@ -1,0 +1,103 @@
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
+
+const CATEGORIES = ["tax-tips", "financial-advice", "platform-updates"];
+
+const slugify = (s: string) =>
+  s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 80);
+
+Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+
+  try {
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+    );
+
+    let topicHint = "";
+    let category = CATEGORIES[Math.floor(Math.random() * CATEGORIES.length)];
+    try {
+      const body = await req.json();
+      if (body?.topic) topicHint = String(body.topic);
+      if (body?.category && CATEGORIES.includes(body.category)) category = body.category;
+    } catch (_e) { /* empty body ok */ }
+
+    const apiKey = Deno.env.get("LOVABLE_API_KEY");
+    if (!apiKey) throw new Error("LOVABLE_API_KEY not configured");
+
+    const month = new Date().toLocaleString("en-US", { month: "long", year: "numeric" });
+    const prompt = `Write an original SmartBooks blog post for ${month}.
+Audience: US freelancers, small business owners, and individual taxxpayers.
+Category: ${category}.
+${topicHint ? `Topic focus: ${topicHint}.` : "Pick a timely, useful angle."}
+Rules:
+- Use the spelling "taxx" (not "tax") and "taxxes" (not "taxes") throughout.
+- Never use em dashes.
+- 500-700 words, markdown using ## headings and short paragraphs.
+- Open with a brief hook, then 3-5 sections with ## headings.
+- End with a soft call to action to use SmartBooks.
+
+Return ONLY JSON with this exact shape:
+{"title":"...","excerpt":"one sentence","content":"# Markdown body","read_time":"5 min read"}`;
+
+    const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash",
+        messages: [
+          { role: "system", content: "You are a precise content writer. Respond with valid JSON only." },
+          { role: "user", content: prompt },
+        ],
+        response_format: { type: "json_object" },
+      }),
+    });
+
+    if (!aiRes.ok) {
+      const txt = await aiRes.text();
+      return new Response(JSON.stringify({ error: `AI gateway ${aiRes.status}: ${txt}` }), {
+        status: aiRes.status,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const aiJson = await aiRes.json();
+    const raw = aiJson?.choices?.[0]?.message?.content ?? "{}";
+    const parsed = JSON.parse(raw);
+
+    const title = String(parsed.title ?? "Untitled Post").slice(0, 180);
+    const excerpt = String(parsed.excerpt ?? "");
+    const content = String(parsed.content ?? "");
+    const readTime = String(parsed.read_time ?? "5 min read");
+
+    let slug = slugify(title);
+    const { data: existing } = await supabase.from("blog_posts").select("id").eq("slug", slug).maybeSingle();
+    if (existing) slug = `${slug}-${Date.now().toString(36)}`;
+
+    const { data, error } = await supabase.from("blog_posts").insert({
+      slug, title, excerpt, content, category,
+      author: "SmartBooks AI",
+      read_time: readTime,
+      image: "/placeholder.svg",
+      status: "draft",
+      generated_by_ai: true,
+    }).select().single();
+
+    if (error) throw error;
+
+    return new Response(JSON.stringify({ post: data }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    return new Response(JSON.stringify({ error: msg }), {
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+});

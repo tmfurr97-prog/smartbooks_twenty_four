@@ -33,6 +33,8 @@ import AdminConsole from "./pages/AdminConsole";
 import BlogList from "./pages/BlogList";
 import BlogPost from "./pages/BlogPost";
 import Features from "./pages/Features";
+import Pricing from "./pages/Pricing";
+import BlogAdmin from "./pages/BlogAdmin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -50,6 +52,7 @@ const App = () => (
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/features" element={<Features />} />
+            <Route path="/pricing" element={<Pricing />} />
             <Route path="/blog" element={<BlogList />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
             <Route
@@ -81,6 +84,7 @@ const App = () => (
               <Route path="return-preview" element={<ReturnPreview />} />
               <Route path="recommendations" element={<Recommendations />} />
               <Route path="admin" element={<AdminConsole />} />
+              <Route path="blog-admin" element={<BlogAdmin />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

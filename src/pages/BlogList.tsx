@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { blogPosts } from "@/data/blogPosts";
+import { blogPosts as staticPosts, type BlogPost } from "@/data/blogPosts";
+import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const categories = [
   { value: "all", label: "All Posts" },
@@ -14,17 +17,44 @@ const categories = [
 
 export default function BlogList() {
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [posts, setPosts] = useState<BlogPost[]>(staticPosts);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase
+        .from("blog_posts")
+        .select("slug,title,excerpt,content,category,author,read_time,image,published_at")
+        .eq("status", "published")
+        .order("published_at", { ascending: false });
+      if (data && data.length) {
+        const dbPosts: BlogPost[] = data.map((d) => ({
+          slug: d.slug,
+          title: d.title,
+          excerpt: d.excerpt,
+          content: d.content,
+          category: d.category,
+          author: d.author,
+          date: d.published_at ? new Date(d.published_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "",
+          readTime: d.read_time,
+          image: d.image,
+        }));
+        const seen = new Set(dbPosts.map((p) => p.slug));
+        setPosts([...dbPosts, ...staticPosts.filter((p) => !seen.has(p.slug))]);
+      }
+    })();
+  }, []);
 
   const filteredPosts = selectedCategory === "all"
-    ? blogPosts
-    : blogPosts.filter((post) => post.category === selectedCategory);
+    ? posts
+    : posts.filter((post) => post.category === selectedCategory);
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div className="min-h-screen bg-background flex flex-col">
+      <Navbar />
+      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 w-full">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-heading font-bold text-foreground mb-4">SmartBooks Blog</h1>
-          <p className="text-xl text-muted-foreground">Tax tips, financial advice, and platform updates</p>
+          <p className="text-xl text-foreground">Taxx tips, financial advice, and platform updates</p>
         </div>
 
         <div className="flex flex-wrap justify-center gap-3 mb-12">
@@ -47,13 +77,13 @@ export default function BlogList() {
                 <CardHeader>
                   <div className="flex items-center justify-between mb-2">
                     <Badge variant="secondary">{post.category.replace("-", " ")}</Badge>
-                    <span className="text-sm text-muted-foreground">{post.readTime}</span>
+                    <span className="text-sm text-foreground">{post.readTime}</span>
                   </div>
                   <CardTitle className="text-xl">{post.title}</CardTitle>
                   <CardDescription>{post.excerpt}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex items-center justify-between text-sm text-muted-foreground">
+                  <div className="flex items-center justify-between text-sm text-foreground">
                     <span>{post.author}</span>
                     <span>{post.date}</span>
                   </div>
@@ -62,7 +92,8 @@ export default function BlogList() {
             </Link>
           ))}
         </div>
-      </div>
+      </main>
+      <Footer />
     </div>
   );
 }
