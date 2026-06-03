@@ -8,6 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { FileSignature, ShieldCheck } from "lucide-react";
 import { ENGAGEMENT_SCOPE } from "@/lib/engagementLetter";
 import type { PreparerProfile } from "./PreparerCredentialsBanner";
+import ptinBadge from "@/assets/ptin-badge.png.asset.json";
 
 interface Props {
   preparer: PreparerProfile | null;
