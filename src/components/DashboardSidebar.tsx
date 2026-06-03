@@ -22,6 +22,7 @@ import {
   FileText,
   Sparkles,
   Wrench,
+  Newspaper,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
@@ -47,6 +48,7 @@ const navItems = [
   { icon: Building2, label: "Business Entities", path: "/dashboard/business-entities" },
   { icon: Bitcoin, label: "Crypto Taxes", path: "/dashboard/crypto-taxes" },
   { icon: Wrench, label: "Admin Console", path: "/dashboard/admin" },
+  { icon: Newspaper, label: "Blog Admin", path: "/dashboard/blog-admin" },
 ];
 
 interface DashboardSidebarProps {
