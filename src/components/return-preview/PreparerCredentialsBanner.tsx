@@ -44,7 +44,6 @@ export default function PreparerCredentialsBanner({ preparer }: { preparer: Prep
             ))}
           </div>
           <div className="mt-1 flex items-center gap-3 flex-wrap text-sm text-foreground">
-            {preparer.ptin && <span className="font-mono">PTIN {preparer.ptin}</span>}
             {preparer.qb_certifications.map((q) => (
               <span key={q} className="inline-flex items-center gap-1">
                 <Award className="w-3 h-3 text-gold" />
