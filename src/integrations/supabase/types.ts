@@ -260,6 +260,108 @@ export type Database = {
         }
         Relationships: []
       }
+      information_returns: {
+        Row: {
+          created_at: string
+          environment: string
+          error_message: string | null
+          federal_tax_withheld: number
+          form_type: string
+          id: string
+          nonemployee_compensation: number
+          payer_address1: string
+          payer_city: string
+          payer_ein: string
+          payer_name: string
+          payer_state: string
+          payer_zip: string
+          recipient_address1: string
+          recipient_city: string
+          recipient_email: string | null
+          recipient_name: string
+          recipient_state: string
+          recipient_tin: string
+          recipient_tin_type: string
+          recipient_zip: string
+          record_id: string | null
+          state_code: string | null
+          state_id: string | null
+          state_tax_withheld: number
+          status: string
+          submission_id: string | null
+          submitted_at: string | null
+          taxx_year: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          environment?: string
+          error_message?: string | null
+          federal_tax_withheld?: number
+          form_type?: string
+          id?: string
+          nonemployee_compensation?: number
+          payer_address1: string
+          payer_city: string
+          payer_ein: string
+          payer_name: string
+          payer_state: string
+          payer_zip: string
+          recipient_address1: string
+          recipient_city: string
+          recipient_email?: string | null
+          recipient_name: string
+          recipient_state: string
+          recipient_tin: string
+          recipient_tin_type?: string
+          recipient_zip: string
+          record_id?: string | null
+          state_code?: string | null
+          state_id?: string | null
+          state_tax_withheld?: number
+          status?: string
+          submission_id?: string | null
+          submitted_at?: string | null
+          taxx_year: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          environment?: string
+          error_message?: string | null
+          federal_tax_withheld?: number
+          form_type?: string
+          id?: string
+          nonemployee_compensation?: number
+          payer_address1?: string
+          payer_city?: string
+          payer_ein?: string
+          payer_name?: string
+          payer_state?: string
+          payer_zip?: string
+          recipient_address1?: string
+          recipient_city?: string
+          recipient_email?: string | null
+          recipient_name?: string
+          recipient_state?: string
+          recipient_tin?: string
+          recipient_tin_type?: string
+          recipient_zip?: string
+          record_id?: string | null
+          state_code?: string | null
+          state_id?: string | null
+          state_tax_withheld?: number
+          status?: string
+          submission_id?: string | null
+          submitted_at?: string | null
+          taxx_year?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           content: string
