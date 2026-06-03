@@ -34,15 +34,20 @@ export default function Recommendations() {
       setHasProAccess(roles.includes("admin") || roles.includes("preparer"));
 
       const p = profileRes.data;
+      const dbStatus = (p?.filing_status as string) ?? "single";
+      const mappedStatus: TaxxProfile["filingStatus"] =
+        dbStatus === "head_of_household" ? "head_of_household" : dbStatus.startsWith("married") ? "married" : "single";
       const profile: TaxxProfile = calculateTaxxProfile({
+        userId: user.id,
         income: Number(p?.income ?? 0),
         expenses: Number(p?.expenses ?? 0),
         mileage: Number(p?.mileage ?? 0),
         homeOfficeDeduction: Number(p?.home_office_deduction ?? 0),
-        filingStatus: (p?.filing_status as TaxxProfile["filingStatus"]) ?? "single",
+        filingStatus: mappedStatus,
         netProfit: 0,
         estimatedTaxLiability: 0,
         projectedRefund: 0,
+        missingDocuments: [],
       });
 
       setRecs(generateRecommendations(profile));
