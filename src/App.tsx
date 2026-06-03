@@ -76,6 +76,7 @@ const App = () => (
               <Route path="health-check" element={<HealthCheck />} />
               <Route path="business-entities" element={<BusinessEntities />} />
               <Route path="crypto-taxes" element={<CryptoTaxes />} />
+              <Route path="profile" element={<TaxxProfile />} />
               <Route path="taxx-profile" element={<TaxxProfile />} />
               <Route path="return-preview" element={<ReturnPreview />} />
               <Route path="recommendations" element={<Recommendations />} />
