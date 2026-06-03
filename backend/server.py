@@ -836,16 +836,21 @@ async def get_listing(listing_id: str):
         listing["id"] = str(listing["_id"])
         listing.pop("_id", None)
 
-        # Hydrate host info for the detail view
-        listing["host_verified"] = False
+        # Hydrate host info for the detail view.
+        # Respect listing-level host_verified flag first (used by seed data),
+        # fall back to the owner user lookup if not present.
         listing["host_name"] = None
+        existing_host_verified = listing.get("host_verified")
+        host_verified_resolved: bool = bool(existing_host_verified) if existing_host_verified is not None else False
         try:
             owner = await db.users.find_one({"_id": ObjectId(listing["owner_id"])})
             if owner:
-                listing["host_verified"] = bool(owner.get("host_verified"))
                 listing["host_name"] = owner.get("name")
+                if existing_host_verified is None:
+                    host_verified_resolved = bool(owner.get("host_verified"))
         except Exception:
             pass
+        listing["host_verified"] = host_verified_resolved
         return listing
     except HTTPException:
         raise
@@ -941,10 +946,9 @@ async def create_booking(
     booking: BookingCreate,
     current_user: dict = Depends(get_current_user)
 ):
-    # Check if user is verified
-    if not current_user.get("is_verified"):
-        raise HTTPException(status_code=403, detail="Must be verified to book")
-    
+    # Anyone with an account can book — verification is NOT required (matches Airbnb).
+    # Verified guests just pay a lower service fee (8% vs 14%) via the pricing model below.
+
     # Require ToS acceptance for every booking
     if not booking.tos_accepted:
         raise HTTPException(

@@ -95,16 +95,21 @@ export default function ListingDetail() {
       return;
     }
     if (!user?.is_verified) {
+      // New model: anyone can book. Upsell Furrst-Check with the savings number.
       Alert.alert(
-        'Verification Required',
-        'You must be verified to book listings.',
+        'Want to save 6% on this trip?',
+        "Get Furrst-Checked for $14.99 — locks in the 8% service fee on every booking (forever). Unverified bookings pay 14%.",
         [
-          { text: 'Cancel', style: 'cancel' },
-          { text: 'Verify Now', onPress: () => router.push('/verification') },
+          { text: 'Maybe later — continue at 14%', onPress: () => proceedToBook() },
+          { text: 'Get Furrst-Checked', onPress: () => router.push('/verification') },
         ]
       );
       return;
     }
+    proceedToBook();
+  };
+
+  const proceedToBook = async () => {
 
     if (!startDate || !endDate) {
       Alert.alert('Error', 'Please select start and end dates');
