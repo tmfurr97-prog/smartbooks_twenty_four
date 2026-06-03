@@ -112,6 +112,8 @@ export type Database = {
           ai_category: string | null
           category: string
           created_at: string
+          extracted_data: Json | null
+          extracted_text: string | null
           file_hash: string | null
           file_name: string
           file_size: number
@@ -127,6 +129,8 @@ export type Database = {
           ai_category?: string | null
           category?: string
           created_at?: string
+          extracted_data?: Json | null
+          extracted_text?: string | null
           file_hash?: string | null
           file_name: string
           file_size: number
@@ -142,6 +146,8 @@ export type Database = {
           ai_category?: string | null
           category?: string
           created_at?: string
+          extracted_data?: Json | null
+          extracted_text?: string | null
           file_hash?: string | null
           file_name?: string
           file_size?: number
