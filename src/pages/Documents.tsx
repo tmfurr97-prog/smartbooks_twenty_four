@@ -198,7 +198,16 @@ export default function Documents() {
                 },
               );
               if (extractResp.ok) {
-                toast({ title: `Data extracted from ${file.name}` });
+                const result = await extractResp.json();
+                const count = result.filled_fields?.length ?? 0;
+                if (count > 0) {
+                  toast({
+                    title: `${count} profile field${count === 1 ? "" : "s"} auto-filled`,
+                    description: `From ${file.name}. Review in Taxx Profile.`,
+                  });
+                } else {
+                  toast({ title: `Data extracted from ${file.name}` });
+                }
               }
             } catch {
               // non-fatal
