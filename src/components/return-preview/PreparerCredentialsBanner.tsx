@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Award, ShieldCheck, User as UserIcon } from "lucide-react";
+import ptinBadge from "@/assets/ptin-badge.png.asset.json";
 
 export interface PreparerProfile {
   display_name: string;
@@ -53,6 +54,11 @@ export default function PreparerCredentialsBanner({ preparer }: { preparer: Prep
           </div>
           {preparer.bio && <p className="mt-2 text-sm text-foreground">{preparer.bio}</p>}
         </div>
+        <img
+          src={ptinBadge.url}
+          alt="Registered Taxx Professional - verified PTIN"
+          className="w-16 h-16 shrink-0 hidden sm:block"
+        />
       </div>
     </Card>
   );
