@@ -43,6 +43,7 @@ const navItems = [
   { icon: ClipboardCheck, label: "Year-End Checklist", path: "/dashboard/checklist" },
   { icon: Shield, label: "Audit Defense", path: "/dashboard/audit-defense" },
   { icon: Send, label: "E-File", path: "/dashboard/efile" },
+  { icon: FileText, label: "1099-NEC Filing", path: "/dashboard/information-returns" },
   { icon: Database, label: "Backups", path: "/dashboard/backups" },
   { icon: HeartPulse, label: "Health Check", path: "/dashboard/health-check" },
   { icon: Building2, label: "Business Entities", path: "/dashboard/business-entities" },
