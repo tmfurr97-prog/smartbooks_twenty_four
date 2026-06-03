@@ -62,6 +62,53 @@ export type Database = {
         }
         Relationships: []
       }
+      engagement_letters: {
+        Row: {
+          acknowledged_at: string
+          created_at: string
+          id: string
+          ip_address: string | null
+          preparer_id: string | null
+          scope_json: Json
+          signature_name: string
+          tax_year: number
+          user_id: string
+          version_hash: string
+        }
+        Insert: {
+          acknowledged_at?: string
+          created_at?: string
+          id?: string
+          ip_address?: string | null
+          preparer_id?: string | null
+          scope_json: Json
+          signature_name: string
+          tax_year: number
+          user_id: string
+          version_hash: string
+        }
+        Update: {
+          acknowledged_at?: string
+          created_at?: string
+          id?: string
+          ip_address?: string | null
+          preparer_id?: string | null
+          scope_json?: Json
+          signature_name?: string
+          tax_year?: number
+          user_id?: string
+          version_hash?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "engagement_letters_preparer_id_fkey"
+            columns: ["preparer_id"]
+            isOneToOne: false
+            referencedRelation: "preparer_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       estimated_tax_payments: {
         Row: {
           created_at: string
@@ -176,6 +223,48 @@ export type Database = {
         }
         Relationships: []
       }
+      preparer_profiles: {
+        Row: {
+          accepting_clients: boolean
+          bio: string | null
+          created_at: string
+          credentials: string[]
+          display_name: string
+          headshot_url: string | null
+          id: string
+          ptin: string | null
+          qb_certifications: string[]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          accepting_clients?: boolean
+          bio?: string | null
+          created_at?: string
+          credentials?: string[]
+          display_name: string
+          headshot_url?: string | null
+          id?: string
+          ptin?: string | null
+          qb_certifications?: string[]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          accepting_clients?: boolean
+          bio?: string | null
+          created_at?: string
+          credentials?: string[]
+          display_name?: string
+          headshot_url?: string | null
+          id?: string
+          ptin?: string | null
+          qb_certifications?: string[]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -202,6 +291,66 @@ export type Database = {
           id?: string
           last_name?: string | null
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      return_scenarios: {
+        Row: {
+          computed_summary_json: Json | null
+          created_at: string
+          id: string
+          inputs_json: Json
+          name: string
+          tax_year: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          computed_summary_json?: Json | null
+          created_at?: string
+          id?: string
+          inputs_json?: Json
+          name: string
+          tax_year: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          computed_summary_json?: Json | null
+          created_at?: string
+          id?: string
+          inputs_json?: Json
+          name?: string
+          tax_year?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      return_snapshots: {
+        Row: {
+          confidence: number | null
+          created_at: string
+          id: string
+          summary_json: Json
+          tax_year: number
+          user_id: string
+        }
+        Insert: {
+          confidence?: number | null
+          created_at?: string
+          id?: string
+          summary_json: Json
+          tax_year: number
+          user_id: string
+        }
+        Update: {
+          confidence?: number | null
+          created_at?: string
+          id?: string
+          summary_json?: Json
+          tax_year?: number
           user_id?: string
         }
         Relationships: []
