@@ -129,7 +129,7 @@ export default function ReturnPreview() {
         tax_year: TAX_YEAR,
         version_hash: versionHash,
         signature_name: signatureName,
-        scope_json: ENGAGEMENT_SCOPE as unknown as Record<string, unknown>,
+        scope_json: JSON.parse(JSON.stringify(ENGAGEMENT_SCOPE)),
       });
       if (error) throw error;
       setAcknowledged(true);
