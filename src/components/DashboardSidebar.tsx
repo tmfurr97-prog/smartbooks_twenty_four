@@ -110,7 +110,7 @@ export default function DashboardSidebar({ mobile, onNavigate }: DashboardSideba
           </div>
         )}
         <Link
-          to="/dashboard/profile"
+          to="/dashboard/taxx-profile"
           className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground transition-colors"
         >
           <User className="w-5 h-5" />
