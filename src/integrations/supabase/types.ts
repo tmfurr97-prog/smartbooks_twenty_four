@@ -265,18 +265,21 @@ export type Database = {
           content: string
           created_at: string
           id: string
+          recipient_id: string | null
           sender_id: string
         }
         Insert: {
           content: string
           created_at?: string
           id?: string
+          recipient_id?: string | null
           sender_id: string
         }
         Update: {
           content?: string
           created_at?: string
           id?: string
+          recipient_id?: string | null
           sender_id?: string
         }
         Relationships: []
