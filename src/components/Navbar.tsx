@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import logoMark from "@/assets/smartbooks-logo-mark.png.asset.json";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -9,7 +10,8 @@ export default function Navbar() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-black-deep/90 backdrop-blur-md border-b border-border/20">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <Link to="/" className="font-heading text-xl font-bold text-primary-foreground">
+        <Link to="/" className="flex items-center gap-2 font-heading text-xl font-bold text-primary-foreground">
+          <img src={logoMark.url} alt="SmartBooks by ReFurrm" className="h-9 w-9 rounded-full" />
           Smart<span className="text-gradient-gold">Books</span>
         </Link>
 
