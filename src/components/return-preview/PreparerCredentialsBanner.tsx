@@ -4,7 +4,6 @@ import { Award, ShieldCheck, User as UserIcon } from "lucide-react";
 
 export interface PreparerProfile {
   display_name: string;
-  ptin: string | null;
   credentials: string[];
   qb_certifications: string[];
   bio: string | null;
