@@ -73,6 +73,7 @@ const App = () => (
               <Route path="health-check" element={<HealthCheck />} />
               <Route path="business-entities" element={<BusinessEntities />} />
               <Route path="crypto-taxes" element={<CryptoTaxes />} />
+              <Route path="taxx-profile" element={<TaxxProfile />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
