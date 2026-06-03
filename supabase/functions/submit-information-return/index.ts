@@ -5,10 +5,19 @@ import { create, getNumericDate } from 'https://deno.land/x/djwt@v3.0.2/mod.ts';
 const TAXBANDITS_SANDBOX = 'https://testapi.taxbandits.com/v1.7.3';
 const TAXBANDITS_PROD = 'https://api.taxbandits.com/v1.7.3';
 
+function b64decode(s: string): Uint8Array {
+  const bin = atob(s);
+  const out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out;
+}
+
 async function buildJWT(userToken: string, clientSecret: string) {
+  // TaxBandits client secret is base64-encoded; decode before HMAC signing
+  const keyBytes = b64decode(clientSecret);
   const key = await crypto.subtle.importKey(
     'raw',
-    new TextEncoder().encode(clientSecret),
+    keyBytes,
     { name: 'HMAC', hash: 'SHA-256' },
     false,
     ['sign', 'verify'],
