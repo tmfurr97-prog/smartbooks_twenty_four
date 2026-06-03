@@ -8,8 +8,10 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { Calculator, Save, TrendingDown, DollarSign, FileText } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Calculator, Save, TrendingDown, DollarSign, FileText, Lightbulb } from "lucide-react";
 import { calculateTaxxProfile, MILEAGE_RATE } from "@/utils/taxCalculator";
+import { generateRecommendations, type RecommendationPriority } from "@/utils/recommendationEngine";
 import { createEmptyTaxxProfile, type FilingStatus, type TaxxProfile } from "@/types/taxProfile";
 
 export default function TaxxProfile() {
