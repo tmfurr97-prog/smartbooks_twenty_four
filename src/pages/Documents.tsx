@@ -179,7 +179,7 @@ export default function Documents() {
 
           toast({
             title: `${file.name} uploaded`,
-            description: `Auto-categorized as ${CATEGORIES.find((c) => c.value === aiCategory)?.label ?? aiCategory}. Extracting data…`,
+            description: `Filed under ${CATEGORIES.find((c) => c.value === aiCategory)?.label ?? aiCategory}. Reading your info…`,
           });
 
           // Step 5: Extract numbers/data from file contents (fire and forget per file)
@@ -202,11 +202,11 @@ export default function Documents() {
                 const count = result.filled_fields?.length ?? 0;
                 if (count > 0) {
                   toast({
-                    title: `${count} profile field${count === 1 ? "" : "s"} auto-filled`,
-                    description: `From ${file.name}. Review in Taxx Profile.`,
+                    title: `Pre-filled ${count} field${count === 1 ? "" : "s"} from ${file.name}`,
+                    description: `Review and edit anytime in your Taxx Profile.`,
                   });
                 } else {
-                  toast({ title: `Data extracted from ${file.name}` });
+                  toast({ title: `Saved info from ${file.name}` });
                 }
               }
             } catch {
@@ -253,7 +253,7 @@ export default function Documents() {
     <div className="space-y-8">
       <div>
         <h1 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-2">Documents</h1>
-        <p className="text-muted-foreground">Upload and manage your tax documents — AI handles sorting and naming.</p>
+        <p className="text-muted-foreground">Upload your taxx docs as you get them. We'll sort, name, and pre-fill your return for you.</p>
       </div>
 
       {/* Upload area */}
@@ -276,7 +276,7 @@ export default function Documents() {
           </div>
           <p className="text-xs text-muted-foreground pb-2">
             <Brain className="w-3.5 h-3.5 inline-block mr-1 text-accent" />
-            AI will auto-detect the category for you
+            We'll auto-sort and pre-fill your info from each upload
           </p>
         </div>
 
@@ -295,7 +295,7 @@ export default function Documents() {
           {analyzing ? (
             <>
               <Brain className="w-10 h-10 text-accent animate-pulse" />
-              <p className="text-muted-foreground text-center text-sm">Analyzing document with AI…</p>
+              <p className="text-muted-foreground text-center text-sm">Reading your document…</p>
             </>
           ) : uploading ? (
             <>
@@ -389,7 +389,7 @@ export default function Documents() {
                 {totalEntries.length > 0 && (
                   <div className="rounded-lg bg-accent/5 border border-accent/20 p-3">
                     <p className="text-xs font-semibold text-accent mb-2 flex items-center gap-1">
-                      <Brain className="w-3 h-3" /> AI-extracted figures
+                      <Brain className="w-3 h-3" /> Pre-filled from this document
                     </p>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm">
                       {totalEntries.map(([k, v]) => (
