@@ -68,7 +68,7 @@ export default function ReturnPreview() {
       setHasProAccess(isAdminOrPreparer); // TODO: wire Stripe Pro tier here
 
       setAcknowledged(!!letterRes.data || isAdminOrPreparer);
-      setPreparer((prepRes.data as PreparerProfile | null) ?? null);
+      setPreparer(((prepRes.data as unknown) as PreparerProfile | null) ?? null);
 
       const profile = profileRes.data;
       const txs = txRes.data ?? [];
