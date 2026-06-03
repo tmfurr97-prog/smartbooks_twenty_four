@@ -426,37 +426,178 @@ export type Database = {
       }
       tax_profiles: {
         Row: {
+          address_line1: string | null
+          address_line2: string | null
+          business_code: string | null
+          business_ein: string | null
+          business_name: string | null
+          business_type: string | null
+          capital_gains: number
+          charitable_contributions: number
+          city: string | null
           created_at: string
+          date_of_birth: string | null
+          dependent_care_expenses: number
+          dependents: Json
+          dividend_income: number
+          education_expenses: number
+          estimated_tax_paid: number
           expenses: number
+          federal_withholding: number
           filing_status: Database["public"]["Enums"]["filing_status"]
           home_office_deduction: number
+          hsa_contributions: number
           id: string
           income: number
+          interest_income: number
+          ira_contributions: number
+          medical_expenses: number
           mileage: number
+          mortgage_interest: number
+          occupation: string | null
+          other_income: number
+          phone: string | null
+          prior_year_agi: number
+          property_taxes: number
+          qualified_dividends: number
+          refund_account: string | null
+          refund_account_type: string | null
+          refund_bank_name: string | null
+          refund_routing: string | null
+          retirement_distributions: number
+          sep_solo_401k_contributions: number
+          social_security_income: number
+          spouse_date_of_birth: string | null
+          spouse_first_name: string | null
+          spouse_last_name: string | null
+          spouse_occupation: string | null
+          spouse_ssn: string | null
+          ssn: string | null
+          state: string | null
+          state_local_taxes_paid: number
+          state_withholding: number
+          student_loan_interest: number
+          unemployment_income: number
           updated_at: string
           user_id: string
+          w2_wages: number
+          zip: string | null
         }
         Insert: {
+          address_line1?: string | null
+          address_line2?: string | null
+          business_code?: string | null
+          business_ein?: string | null
+          business_name?: string | null
+          business_type?: string | null
+          capital_gains?: number
+          charitable_contributions?: number
+          city?: string | null
           created_at?: string
+          date_of_birth?: string | null
+          dependent_care_expenses?: number
+          dependents?: Json
+          dividend_income?: number
+          education_expenses?: number
+          estimated_tax_paid?: number
           expenses?: number
+          federal_withholding?: number
           filing_status?: Database["public"]["Enums"]["filing_status"]
           home_office_deduction?: number
+          hsa_contributions?: number
           id?: string
           income?: number
+          interest_income?: number
+          ira_contributions?: number
+          medical_expenses?: number
           mileage?: number
+          mortgage_interest?: number
+          occupation?: string | null
+          other_income?: number
+          phone?: string | null
+          prior_year_agi?: number
+          property_taxes?: number
+          qualified_dividends?: number
+          refund_account?: string | null
+          refund_account_type?: string | null
+          refund_bank_name?: string | null
+          refund_routing?: string | null
+          retirement_distributions?: number
+          sep_solo_401k_contributions?: number
+          social_security_income?: number
+          spouse_date_of_birth?: string | null
+          spouse_first_name?: string | null
+          spouse_last_name?: string | null
+          spouse_occupation?: string | null
+          spouse_ssn?: string | null
+          ssn?: string | null
+          state?: string | null
+          state_local_taxes_paid?: number
+          state_withholding?: number
+          student_loan_interest?: number
+          unemployment_income?: number
           updated_at?: string
           user_id: string
+          w2_wages?: number
+          zip?: string | null
         }
         Update: {
+          address_line1?: string | null
+          address_line2?: string | null
+          business_code?: string | null
+          business_ein?: string | null
+          business_name?: string | null
+          business_type?: string | null
+          capital_gains?: number
+          charitable_contributions?: number
+          city?: string | null
           created_at?: string
+          date_of_birth?: string | null
+          dependent_care_expenses?: number
+          dependents?: Json
+          dividend_income?: number
+          education_expenses?: number
+          estimated_tax_paid?: number
           expenses?: number
+          federal_withholding?: number
           filing_status?: Database["public"]["Enums"]["filing_status"]
           home_office_deduction?: number
+          hsa_contributions?: number
           id?: string
           income?: number
+          interest_income?: number
+          ira_contributions?: number
+          medical_expenses?: number
           mileage?: number
+          mortgage_interest?: number
+          occupation?: string | null
+          other_income?: number
+          phone?: string | null
+          prior_year_agi?: number
+          property_taxes?: number
+          qualified_dividends?: number
+          refund_account?: string | null
+          refund_account_type?: string | null
+          refund_bank_name?: string | null
+          refund_routing?: string | null
+          retirement_distributions?: number
+          sep_solo_401k_contributions?: number
+          social_security_income?: number
+          spouse_date_of_birth?: string | null
+          spouse_first_name?: string | null
+          spouse_last_name?: string | null
+          spouse_occupation?: string | null
+          spouse_ssn?: string | null
+          ssn?: string | null
+          state?: string | null
+          state_local_taxes_paid?: number
+          state_withholding?: number
+          student_loan_interest?: number
+          unemployment_income?: number
           updated_at?: string
           user_id?: string
+          w2_wages?: number
+          zip?: string | null
         }
         Relationships: []
       }
