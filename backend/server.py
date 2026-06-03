@@ -105,6 +105,45 @@ async def get_admin_user(current_user: dict = Depends(get_current_user)):
         raise HTTPException(status_code=403, detail="Admin access required")
     return current_user
 
+# --- Startup: idempotent admin bootstrap so login works after every redeploy ---
+ADMIN_BOOTSTRAP_EMAIL = "admin@furrstcamp.com"
+ADMIN_BOOTSTRAP_PASSWORD = "Admin123!"
+
+@app.on_event("startup")
+async def bootstrap_admin_user():
+    """Ensures the documented admin always exists with a valid password hash.
+    Safe to run every boot — only updates the password hash + admin flags."""
+    try:
+        hashed = pwd_context.hash(ADMIN_BOOTSTRAP_PASSWORD)
+        now = datetime.utcnow().isoformat()
+        existing = await db.users.find_one({"email": ADMIN_BOOTSTRAP_EMAIL})
+        if existing:
+            await db.users.update_one(
+                {"email": ADMIN_BOOTSTRAP_EMAIL},
+                {"$set": {
+                    "password": hashed,
+                    "is_admin": True,
+                    "is_verified": True,
+                    "is_banned": False,
+                }},
+            )
+            print(f"[bootstrap] Admin password refreshed: {ADMIN_BOOTSTRAP_EMAIL}")
+        else:
+            await db.users.insert_one({
+                "email": ADMIN_BOOTSTRAP_EMAIL,
+                "password": hashed,
+                "name": "FurrstCamp Admin",
+                "phone": "+15555550100",
+                "is_verified": True,
+                "is_admin": True,
+                "is_banned": False,
+                "created_at": now,
+                "verified_at": now,
+            })
+            print(f"[bootstrap] Admin created: {ADMIN_BOOTSTRAP_EMAIL}")
+    except Exception as e:
+        print(f"[bootstrap] Admin seed skipped due to error: {e}")
+
 # Pydantic Models
 class UserRegister(BaseModel):
     email: EmailStr
