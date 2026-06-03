@@ -276,7 +276,7 @@ export default function Documents() {
           </div>
           <p className="text-xs text-muted-foreground pb-2">
             <Brain className="w-3.5 h-3.5 inline-block mr-1 text-accent" />
-            AI will auto-detect the category for you
+            We'll auto-sort and pre-fill your info from each upload
           </p>
         </div>
 
