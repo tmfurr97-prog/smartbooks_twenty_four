@@ -160,23 +160,50 @@ export default function Documents() {
           const { error: uploadError } = await supabase.storage.from("documents").upload(storagePath, file);
           if (uploadError) throw uploadError;
 
-          const { error: dbError } = await supabase.from("documents").insert({
-            user_id: user.id,
-            file_name: file.name,
-            file_size: file.size,
-            file_type: file.type,
-            category: aiCategory,
-            storage_path: storagePath,
-            file_hash: fileHash || null,
-            ai_category: aiCategory,
-            suggested_name: suggestedName,
-          });
+          const { data: inserted, error: dbError } = await supabase
+            .from("documents")
+            .insert({
+              user_id: user.id,
+              file_name: file.name,
+              file_size: file.size,
+              file_type: file.type,
+              category: aiCategory,
+              storage_path: storagePath,
+              file_hash: fileHash || null,
+              ai_category: aiCategory,
+              suggested_name: suggestedName,
+            })
+            .select("id")
+            .single();
           if (dbError) throw dbError;
 
           toast({
             title: `${file.name} uploaded`,
-            description: `Auto-categorized as ${CATEGORIES.find((c) => c.value === aiCategory)?.label ?? aiCategory}`,
+            description: `Auto-categorized as ${CATEGORIES.find((c) => c.value === aiCategory)?.label ?? aiCategory}. Extracting data…`,
           });
+
+          // Step 5: Extract numbers/data from file contents (fire and forget per file)
+          if (inserted?.id) {
+            try {
+              const { data: session } = await supabase.auth.getSession();
+              const extractResp = await fetch(
+                `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/extract-document-data`,
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${session?.session?.access_token ?? import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+                  },
+                  body: JSON.stringify({ document_id: inserted.id }),
+                },
+              );
+              if (extractResp.ok) {
+                toast({ title: `Data extracted from ${file.name}` });
+              }
+            } catch {
+              // non-fatal
+            }
+          }
         } catch {
           toast({ title: `Failed to upload ${file.name}`, variant: "destructive" });
         }
