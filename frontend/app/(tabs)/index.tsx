@@ -120,6 +120,12 @@ export default function Browse() {
               </View>
             </View>
           )}
+          {item.host_verified && (
+            <View style={styles.verifiedHostBadge}>
+              <Ionicons name="shield-checkmark" size={11} color={COLORS.surface} />
+              <Text style={styles.verifiedHostBadgeText}>Verified Host</Text>
+            </View>
+          )}
           {isLongTerm && (
             <View style={styles.longTermBadge}>
               <Text style={styles.longTermText}>365-Day Lease</Text>
@@ -191,6 +197,27 @@ export default function Browse() {
           <Text style={styles.heroHeadline}>
             RVs, land, storage & boats.{'\n'}All in one place.
           </Text>
+          {user && !user.is_verified && (
+            <TouchableOpacity
+              style={styles.heroSavingsPill}
+              onPress={() => router.push('/verification')}
+              activeOpacity={0.85}
+            >
+              <Ionicons name="trending-down" size={14} color={COLORS.surface} />
+              <Text style={styles.heroSavingsPillText}>
+                Save 6% on every booking — Get Furrst-Checked for $14.99
+              </Text>
+              <Ionicons name="chevron-forward" size={14} color={COLORS.surface} />
+            </TouchableOpacity>
+          )}
+          {user?.is_verified && (
+            <View style={styles.heroSavingsPillVerified}>
+              <Ionicons name="shield-checkmark" size={14} color={COLORS.surface} />
+              <Text style={styles.heroSavingsPillText}>
+                Furrst-Checked · saving 6% on every booking
+              </Text>
+            </View>
+          )}
         </View>
 
         {/* SEARCH CARD (overlaps hero) */}
@@ -512,6 +539,56 @@ const styles = StyleSheet.create({
     color: COLORS.surface,
     fontSize: 12,
     fontWeight: 'bold',
+  },
+  verifiedHostBadge: {
+    position: 'absolute',
+    top: SPACING.sm,
+    left: SPACING.sm,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: COLORS.primary,
+    paddingHorizontal: SPACING.sm,
+    paddingVertical: 4,
+    borderRadius: 12,
+    zIndex: 3,
+    elevation: 3,
+    ...SHADOWS.small,
+  },
+  verifiedHostBadgeText: {
+    color: COLORS.surface,
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 0.2,
+  },
+  heroSavingsPill: {
+    marginTop: SPACING.md,
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    gap: SPACING.xs,
+    paddingHorizontal: SPACING.md,
+    paddingVertical: 8,
+    borderRadius: 18,
+    backgroundColor: 'rgba(255,255,255,0.18)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.30)',
+  },
+  heroSavingsPillVerified: {
+    marginTop: SPACING.md,
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    gap: SPACING.xs,
+    paddingHorizontal: SPACING.md,
+    paddingVertical: 8,
+    borderRadius: 18,
+    backgroundColor: 'rgba(255,255,255,0.12)',
+  },
+  heroSavingsPillText: {
+    color: COLORS.surface,
+    fontSize: 12,
+    fontWeight: '700',
   },
   placeholderImage: {
     justifyContent: 'center',

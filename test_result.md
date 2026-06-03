@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Test the DriveShare & Dock backend API endpoints including auth flow, listings, Stripe verification, and API health"
+user_problem_statement: "Test FurrstCamp Travel backend API endpoints. New pricing model: 3% standard host commission, 1.5% verified host commission (with 0% on first 3 bookings for verified hosts), 14% standard guest service fee, 8% verified guest service fee, 3% passthrough on add-ons/cleaning. Verify booking creation, listings GET endpoint returns host_verified flag and sorts verified hosts first, and existing endpoints still work."
 
 backend:
   - task: "Auth Registration Endpoint"
@@ -450,6 +450,45 @@ metadata:
 
   - task: "Nearby listings (Haversine)"
     implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "CRITICAL ROUTE-ORDERING BUG. GET /api/listings/nearby?lat=34.05&lng=-118.25&radius_miles=10 returns 400 {\"detail\":\"Invalid listing ID\"}. Root cause: in server.py, @app.get('/api/listings/{listing_id}') is declared at line ~693 BEFORE @app.get('/api/listings/nearby') at line ~758. FastAPI matches routes in declaration order, so the path 'nearby' is captured by the {listing_id} handler, which then calls ObjectId('nearby') and 400s. FIX (main agent): move the nearby_listings() function definition ABOVE get_listing() / any path-param listings route. Verified by direct curl: `curl 'https://forest-dock.preview.emergentagent.com/api/listings/nearby?lat=34.05&lng=-118.25&radius_miles=10'` → 400 'Invalid listing ID'. LA land_stay listing created successfully (lat=34.0522 lng=-118.2437) and LA boat listing created successfully, but nearby lookup is unreachable due to this route shadowing. Tests 5d/5e/5f/5g/5h could not be fully executed because 5c fails first."
+      - working: true
+        agent: "testing"
+        comment: "FIXED — route ordering corrected in current /app/backend/server.py: @app.get('/api/listings/nearby') (line ~787) now precedes @app.get('/api/listings/{listing_id}') (line ~829). Verified: GET /api/listings/nearby?lat=34.05&lng=-118.25&radius_miles=50 → 200 with {listings:[], count:0} payload (no error). No seed listings have latitude/longitude populated so the result set is empty, but the routing layer is fixed."
+
+  - task: "New Pricing Model — host commission + guest service fee + passthrough"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "POST /api/bookings as admin (verified guest) against seeded land_stay 'Waterfront RV Dock' ($185/day, 2 days) returned all new fields with correct math: guest_verified=true, host_verified=false, guest_service_fee_rate=0.08, host_commission_rate=0.03, base_subtotal=370.00, guest_service_fee=29.60 ((370+0)*0.08), platform_rental_fee=11.10 (370*0.03), platform_add_on_fee=0, host_payout=358.90 ((370+0)-(11.10+0)), security_deposit=0, total_price=399.60 (370+0+29.60+0). All 12 math/field assertions PASS. ToS gate on booking still returns 400 when tos_accepted=false."
+
+  - task: "GET /api/listings returns host_verified + verified-first sort"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "GET /api/listings returns 6 seed listings, every doc carries host_verified bool. 3 listings have host_verified=true ('The Blue Water Pontoon', 'Climate-Controlled RV Storage', 'Luxury Airstream'). First 3 returned ARE the 3 verified hosts (verified-first sort works). GET /api/listings?verified_only=true returns exactly those 3. 9/9 assertions PASS."
+
+  - task: "GET /api/listings/{id} returns host_verified flag"
+    implemented: true
     working: false
     file: "/app/backend/server.py"
     stuck_count: 1
@@ -458,12 +497,51 @@ metadata:
     status_history:
       - working: false
         agent: "testing"
-        comment: "CRITICAL ROUTE-ORDERING BUG. GET /api/listings/nearby?lat=34.05&lng=-118.25&radius_miles=10 returns 400 {\"detail\":\"Invalid listing ID\"}. Root cause: in server.py, @app.get('/api/listings/{listing_id}') is declared at line ~693 BEFORE @app.get('/api/listings/nearby') at line ~758. FastAPI matches routes in declaration order, so the path 'nearby' is captured by the {listing_id} handler, which then calls ObjectId('nearby') and 400s. FIX (main agent): move the nearby_listings() function definition ABOVE get_listing() / any path-param listings route. Verified by direct curl: `curl 'https://forest-dock.preview.emergentagent.com/api/listings/nearby?lat=34.05&lng=-118.25&radius_miles=10'` → 400 'Invalid listing ID'. LA land_stay listing created successfully (lat=34.0522 lng=-118.2437) and LA boat listing created successfully, but nearby lookup is unreachable due to this route shadowing. Tests 5d/5e/5f/5g/5h could not be fully executed because 5c fails first."
+        comment: "PARTIAL REGRESSION. GET /api/listings/{id} on a seeded VERIFIED listing returns host_verified=FALSE even though the listing doc has host_verified=true stored. Root cause: in /app/backend/server.py around line 839-848, the detail endpoint ignores any pre-existing listing['host_verified'] field and unconditionally re-derives it via `db.users.find_one({'_id': ObjectId(listing['owner_id'])})`. Seed listings have owner_id strings like 'seed_user_1', 'seed_user_3', 'seed_user_6' — these are NOT valid ObjectIds, so ObjectId() throws, the bare-except swallows it, and host_verified defaults to False. The LIST endpoint (line 740-764) handles this correctly by respecting a pre-existing listing['host_verified'] override BEFORE the ObjectId lookup; the detail endpoint must mirror that. Reproducer: GET /api/listings/<id of 'The Blue Water Pontoon'> → host_verified=false (expected true). FIX: in get_listing(), respect a pre-existing host_verified field on the listing doc the same way get_listings() does (check `if 'host_verified' in listing and listing.get('host_verified') is not None: keep it`)."
+
+  - task: "Unverified guest booking → 14% service fee"
+    implemented: false
+    working: false
+    file: "/app/backend/server.py"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "DESIGN INCONSISTENCY — cannot exercise unverified-guest pricing branch (14%). The booking endpoint at /app/backend/server.py line 944-946 hard-blocks anyone who isn't is_verified=true: `if not current_user.get('is_verified'): raise HTTPException(403, 'Must be verified to book')`. So an unverified guest cannot reach the pricing code at all — POST /api/bookings as a fresh user returns 403. The 14% (GUEST_SERVICE_FEE_STANDARD) branch is currently dead code with this gate in place. RESOLUTION OPTIONS for main agent: (a) drop the is_verified gate so unverified guests CAN book at the higher 14% rate, OR (b) introduce a separate flag (e.g. `furrst_check_verified`) used purely for pricing while keeping `is_verified` as an account-level requirement for booking. Code as-is contradicts the new pricing model spec."
+
+  - task: "Admin bootstrap startup hook"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "@app.on_event('startup') bootstrap_admin_user() works as designed. POST /api/auth/login {admin@furrstcamp.com / Admin123!} → 200 with JWT + user{is_verified:true, id:'6a205b774221d40cde28b4e1'}. Backend logs show '[bootstrap] Admin password refreshed: admin@furrstcamp.com' on every reload, confirming idempotent re-seed on boot."
+
+  - task: "Stripe verification checkout (post env-reset)"
+    implemented: true
+    working: false
+    file: "/app/backend/.env"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "ENV CONFIG ISSUE — not a code bug. POST /api/payments/verification/create-checkout returns HTTP 500 with backend log 'stripe._error.AuthenticationError: Invalid API Key provided: sk_test_*****************************tion'. /app/backend/.env currently has STRIPE_API_KEY=sk_test_placeholder_replace_in_production. The Stripe checkout endpoint code is correct; it just needs a real (or test-mode) Stripe key. The endpoint also raises this as a 500 rather than a friendlier 502/400 — consider try/except around stripe_checkout.create_checkout_session(...) returning 502 'Payments unavailable'. Same impact applies to /api/payments/booking/create-checkout and /api/payments/host-authenticity/create-checkout."
 
 test_plan:
   current_focus:
+    - "GET /api/listings/{id} returns host_verified flag"
+    - "Unverified guest booking → 14% service fee"
+    - "Stripe verification checkout (post env-reset)"
+  stuck_tasks:
     - "Nearby listings (Haversine)"
-  stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
@@ -482,3 +560,7 @@ agent_communication:
     message: "NEW-FEATURE round: 24/25 assertions PASS in /app/backend_test.py. PASSING: (1) Verification fee = $14.99 — fresh user POST /api/payments/verification/create-checkout returns 200 with url+session_id, DB payment_transactions.amount=14.99, type='verification'. (2) Host Authenticity fee = $9.99 — admin POST /api/payments/host-authenticity/create-checkout returns 200, DB amount=9.99, type='host_authenticity'; second call after host_verified=true → 400. (3) Booking Payment Checkout — admin creates land_stay, fresh verified guest books with tos_accepted=true → 200 (status='awaiting_host_approval'), guest POST /api/payments/booking/create-checkout returns 200 w/ url+session_id, booking.payment_session_id & payment_status='initiated' set; admin (non-guest) → 403. (4) Favorites CRUD — add/dedupe/list/remove/list all behave as specified, including favorited_at field. ❌ FAILING: (5) Nearby listings (/api/listings/nearby) returns 400 'Invalid listing ID'. ROOT CAUSE = ROUTE ORDERING in /app/backend/server.py: @app.get('/api/listings/{listing_id}') is declared (~line 693) BEFORE @app.get('/api/listings/nearby') (~line 758). FastAPI resolves by registration order so the literal path 'nearby' is captured by the {listing_id} handler, which calls ObjectId('nearby') → 400. FIX: main agent must move the `nearby_listings()` route (and its helper `haversine_miles()`) ABOVE the `/api/listings/{listing_id}` route, OR add an explicit conditional guard. Once reordered, all five nearby subtests (LA match, NY no-match, category filter) should pass — the LA land_stay and LA boat_rental listings were created successfully so only the routing layer is broken."
   - agent: "main"
     message: "Public-browse landing + admin bootstrap. (1) Backend: added @app.on_event('startup') bootstrap_admin_user() in server.py that idempotently creates/refreshes admin@furrstcamp.com / Admin123! on every boot — guarantees admin login works after any redeploy without manual seed script. Verified via /api/auth/login returning HTTP 200 + JWT. Also restored missing /app/backend/.env in this fork (MONGO_URL, DB_NAME=driveshare_dock, fresh JWT_SECRET, placeholder Stripe keys), reseeded admin + 6 listings. (2) Frontend UX change: app no longer forces login on first visit. /app/frontend/app/index.tsx now always router.replace('/(tabs)') regardless of auth state. Hero on Browse tab shows a 'Sign In' pill when user is null (next to brand) and the '+' create-listing icon when user is signed in. Created /app/frontend/components/SignInPrompt.tsx and wired it into the four protected tabs: Bookings, Favorites, Messages, Profile — each renders a friendly sign-in CTA + 'Create an account' link when user is null, and skips its protected API calls. handleCreateListing on Browse and handleBook/handleContact + favorite-heart on listing/[id].tsx now prompt 'Sign In Required' (with Cancel/Sign In buttons) when user is null instead of showing the misleading 'Verification Required' alert. Profile logout now router.replace('/(tabs)') to stay consistent with browse-first flow. Backend test pending (no backend changes needing retest beyond the bootstrap hook which was manually verified)."
+  - agent: "testing"
+    message: "NEW-PRICING-MODEL round: 36/39 assertions PASS in /app/backend_test_pricing.py against https://forest-dock.preview.emergentagent.com/api. PASSING: (1) Admin bootstrap login admin@furrstcamp.com/Admin123! → 200, is_verified=true. (2) GET /api/listings returns 6 seed listings with host_verified bool on every doc; 3 verified ('The Blue Water Pontoon','Climate-Controlled RV Storage','Luxury Airstream') appear FIRST in returned order. (3) GET /api/listings?verified_only=true returns exactly the 3 verified listings. (4) POST /api/bookings as admin (verified) against seeded land_stay 'Waterfront RV Dock' ($185/day, 2 days) returned ALL new fields with correct math: guest_verified=true, guest_service_fee_rate=0.08, guest_service_fee=29.60 ((370+0)*0.08), host_commission_rate=0.03 (host_verified=false → standard), platform_rental_fee=11.10 (370*0.03), host_payout=358.90 (370-11.10), total_price=399.60 (370+0+29.60+0). (5) ToS gate on booking still 400s when tos_accepted=false. (6) /auth/me, /listings/nearby, /favorites CRUD all green. (7) Nearby endpoint route-ordering bug from previous round is FIXED.
+
+FAILURES (3): (a) ❌ GET /api/listings/{id} returns host_verified=FALSE for seeded verified listings even though the listing doc has host_verified=true stored. The detail handler at server.py ~line 840-848 always re-derives host_verified by ObjectId-looking up the owner, but seed listings have non-ObjectId owner_ids (e.g. 'seed_user_6'), so the lookup fails and the stored override is ignored. The LIST endpoint handles this correctly by respecting a pre-existing listing['host_verified']. FIX: mirror that override check in get_listing(). (b) ❌ Unverified guest cannot book — booking endpoint hard-requires is_verified=true (line 944-946) and returns 403. So the new 14% guest_service_fee_rate path is unreachable by design. Either drop the gate or introduce a separate flag (furrst_check_verified) for pricing. (c) ❌ POST /api/payments/verification/create-checkout returns 500 — /app/backend/.env has STRIPE_API_KEY=sk_test_placeholder_replace_in_production, so Stripe rejects with AuthenticationError. Code is fine; env needs a real Stripe test key. Also recommend wrapping the call in try/except to return 502 instead of 500."

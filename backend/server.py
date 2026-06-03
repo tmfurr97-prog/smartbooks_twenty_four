@@ -48,24 +48,33 @@ STRIPE_API_KEY = os.getenv("STRIPE_API_KEY")
 VERIFICATION_AMOUNT = 14.99  # Renter "Furrst-Check" verification
 HOST_AUTHENTICITY_FEE = 9.99  # Host "Furrst-Check" authenticity fee
 
-# Platform commission config
-PLATFORM_COMMISSION_INTRO_RATE = 0.10  # 10% for first 6 months after host joined
-PLATFORM_COMMISSION_STANDARD_RATE = 0.15  # 15% after intro period
-PLATFORM_ADD_ON_FEE_RATE = 0.10  # flat 10% on all add-ons, always
-INTRO_PERIOD_DAYS = 180  # 6 months
+# Platform commission config — "Match Airbnb" model
+# Standard split: 3% host + 14% guest = ~17% total platform take (mirrors Airbnb)
+# Verified members get a meaningful permanent discount that pays back the
+# one-time Furrst-Check / Host Authenticity fee within a single booking.
+HOST_COMMISSION_STANDARD = 0.03           # unverified host: 3% per booking
+HOST_COMMISSION_VERIFIED = 0.015          # verified host: 1.5% per booking
+GUEST_SERVICE_FEE_STANDARD = 0.14         # unverified guest: 14% service fee
+GUEST_SERVICE_FEE_VERIFIED = 0.08         # Furrst-Check verified guest: 8% service fee
+PASSTHROUGH_FEE_RATE = 0.03               # 3% platform cut on cleaning/add-ons/pet/etc.
+HOST_WELCOME_FREE_BOOKINGS = 3            # verified hosts get 0% host commission on first 3 bookings
 
-def compute_host_commission_rate(host_created_at_iso: Optional[str]) -> float:
-    """Returns the platform commission rate for the host based on tenure."""
-    if not host_created_at_iso:
-        return PLATFORM_COMMISSION_STANDARD_RATE
-    try:
-        host_created = datetime.fromisoformat(host_created_at_iso.replace("Z", ""))
-    except Exception:
-        return PLATFORM_COMMISSION_STANDARD_RATE
-    age = datetime.utcnow() - host_created
-    if age.days < INTRO_PERIOD_DAYS:
-        return PLATFORM_COMMISSION_INTRO_RATE
-    return PLATFORM_COMMISSION_STANDARD_RATE
+def compute_host_commission_rate(host_verified: bool, host_completed_count: int) -> float:
+    """Host commission rate.
+    - Verified hosts: 0% commission on first HOST_WELCOME_FREE_BOOKINGS bookings,
+      then HOST_COMMISSION_VERIFIED forever.
+    - Unverified hosts: HOST_COMMISSION_STANDARD always.
+    """
+    if host_verified:
+        if host_completed_count < HOST_WELCOME_FREE_BOOKINGS:
+            return 0.0
+        return HOST_COMMISSION_VERIFIED
+    return HOST_COMMISSION_STANDARD
+
+def compute_guest_service_fee_rate(guest_verified: bool) -> float:
+    """Guest-side service fee rate. Furrst-Check verified guests pay a permanently
+    lower service fee — incentivizes the one-time $14.99 verification."""
+    return GUEST_SERVICE_FEE_VERIFIED if guest_verified else GUEST_SERVICE_FEE_STANDARD
 
 # Helper functions
 def hash_password(password: str) -> str:
@@ -704,6 +713,7 @@ async def create_listing(
 async def get_listings(
     category: Optional[str] = None, 
     search: Optional[str] = None,
+    verified_only: bool = False,
     skip: int = 0,
     limit: int = 50
 ):
@@ -726,7 +736,40 @@ async def get_listings(
         listing["id"] = str(listing["_id"])
         listing.pop("_id", None)
         listings.append(listing)
-    
+
+    # Hydrate each listing with host_verified flag (lookup the owner's user record).
+    # If the listing itself has a host_verified flag set (seed data may have it), respect that first.
+    # Cache by owner_id within this request so we don't hit the DB N times.
+    owner_cache: Dict[str, bool] = {}
+    for lst in listings:
+        # Listing-level override (e.g., seeded demo listings)
+        if "host_verified" in lst and lst.get("host_verified") is not None:
+            lst["host_verified"] = bool(lst["host_verified"])
+            continue
+        owner_id = lst.get("owner_id")
+        if not owner_id:
+            lst["host_verified"] = False
+            continue
+        if owner_id in owner_cache:
+            lst["host_verified"] = owner_cache[owner_id]
+            continue
+        host_verified = False
+        try:
+            owner = await db.users.find_one({"_id": ObjectId(owner_id)})
+            if owner:
+                host_verified = bool(owner.get("host_verified"))
+        except Exception:
+            pass
+        owner_cache[owner_id] = host_verified
+        lst["host_verified"] = host_verified
+
+    # Optional verified-only filter
+    if verified_only:
+        listings = [l for l in listings if l.get("host_verified")]
+
+    # Sort: verified hosts first, then by created_at desc (which is the original Mongo order)
+    listings.sort(key=lambda l: (0 if l.get("host_verified") else 1, ))
+
     return listings
 
 import math
@@ -792,7 +835,20 @@ async def get_listing(listing_id: str):
         
         listing["id"] = str(listing["_id"])
         listing.pop("_id", None)
+
+        # Hydrate host info for the detail view
+        listing["host_verified"] = False
+        listing["host_name"] = None
+        try:
+            owner = await db.users.find_one({"_id": ObjectId(listing["owner_id"])})
+            if owner:
+                listing["host_verified"] = bool(owner.get("host_verified"))
+                listing["host_name"] = owner.get("name")
+        except Exception:
+            pass
         return listing
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=400, detail="Invalid listing ID")
 
@@ -949,24 +1005,43 @@ async def create_booking(
             })
             add_ons_subtotal += line_total
         
-        # Fetch host for commission tenure (tolerate non-ObjectId owner_ids on seed data)
+        # Fetch host (tolerate non-ObjectId owner_ids on seed data)
         host = None
         try:
             host = await db.users.find_one({"_id": ObjectId(listing["owner_id"])})
         except Exception:
             pass
-        host_rate = compute_host_commission_rate(host.get("created_at") if host else None)
-        
+
+        # --- New pricing model (Match-Airbnb): host commission + guest service fee + passthrough cuts ---
+        host_verified = bool(host.get("host_verified")) if host else False
+        guest_verified = bool(current_user.get("is_verified"))
+
+        # Count host's already-confirmed/completed bookings (for the verified-host 3-free-bookings welcome)
+        host_completed_count = 0
+        if host_verified:
+            try:
+                host_completed_count = await db.bookings.count_documents({
+                    "host_id": listing["owner_id"],
+                    "status": {"$in": ["confirmed", "completed"]},
+                })
+            except Exception:
+                host_completed_count = 0
+
+        host_rate = compute_host_commission_rate(host_verified, host_completed_count)
+        guest_service_fee_rate = compute_guest_service_fee_rate(guest_verified)
+
         rental_commission = base_subtotal * host_rate
-        add_on_commission = add_ons_subtotal * PLATFORM_ADD_ON_FEE_RATE
-        platform_fee_total = rental_commission + add_on_commission
-        
+        add_on_commission = add_ons_subtotal * PASSTHROUGH_FEE_RATE  # 3% passthrough cut on add-ons
+        guest_service_fee = (base_subtotal + add_ons_subtotal) * guest_service_fee_rate
+        platform_fee_total = rental_commission + add_on_commission + guest_service_fee
+
         # Security deposit (held but not earned)
         security_deposit = float(amenities.get("security_deposit", 0) or 0)
-        
-        # Total charged to guest = rentals + add-ons + security deposit (deposit refundable)
-        total_price = base_subtotal + add_ons_subtotal + security_deposit
-        host_payout = (base_subtotal + add_ons_subtotal) - platform_fee_total
+
+        # Total charged to guest = rentals + add-ons + guest service fee + security deposit (deposit refundable)
+        total_price = base_subtotal + add_ons_subtotal + guest_service_fee + security_deposit
+        # Host gets base+add-ons minus their commission (guest service fee is platform-only)
+        host_payout = (base_subtotal + add_ons_subtotal) - (rental_commission + add_on_commission)
         
         # Universal host approval: every booking starts pending review.
         # RV + Boat use "awaiting_insurance_review"; Land + Storage use "awaiting_host_approval".
@@ -993,9 +1068,13 @@ async def create_booking(
             "add_ons": add_on_items,
             "add_ons_subtotal": round(add_ons_subtotal, 2),
             "security_deposit": round(security_deposit, 2),
-            "platform_fee_rate": host_rate,
+            "host_verified": host_verified,
+            "guest_verified": guest_verified,
+            "host_commission_rate": host_rate,
+            "guest_service_fee_rate": guest_service_fee_rate,
             "platform_rental_fee": round(rental_commission, 2),
             "platform_add_on_fee": round(add_on_commission, 2),
+            "guest_service_fee": round(guest_service_fee, 2),
             "platform_fee_total": round(platform_fee_total, 2),
             "host_payout": round(host_payout, 2),
             "total_price": round(total_price, 2),

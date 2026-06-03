@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   Alert,
   Linking,
+  ScrollView,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -90,41 +91,68 @@ export default function Verification() {
       </View>
 
       <View style={styles.content}>
-        <View style={styles.iconContainer}>
-          <Ionicons name="shield-checkmark" size={80} color={COLORS.primary} />
-        </View>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 32 }}>
 
-        <Text style={styles.title}>Get Verified</Text>
+        <Text style={styles.title}>Get Furrst-Checked</Text>
         <Text style={styles.subtitle}>
-          Complete verification to unlock all features
+          The one-time verification that pays for itself in your first booking.
         </Text>
 
+        <View style={styles.savingsCard}>
+          <View style={styles.savingsHeader}>
+            <Ionicons name="trending-down" size={18} color={COLORS.surface} />
+            <Text style={styles.savingsHeaderText}>Lock in 8% service fee — forever</Text>
+          </View>
+          <View style={styles.savingsRow}>
+            <Text style={styles.savingsRowLabel}>Without Furrst-Check</Text>
+            <Text style={styles.savingsRowValue}>14% service fee</Text>
+          </View>
+          <View style={styles.savingsRow}>
+            <Text style={styles.savingsRowLabel}>With Furrst-Check</Text>
+            <Text style={[styles.savingsRowValue, styles.savingsRowGood]}>8% service fee</Text>
+          </View>
+          <View style={styles.savingsExample}>
+            <Text style={styles.savingsExampleText}>
+              On a $1,000 trip: you save <Text style={styles.savingsHighlight}>$60</Text>{' '}
+              every time — and keep saving on every future booking.
+            </Text>
+          </View>
+        </View>
+
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Verification unlocks:</Text>
-          
+          <Text style={styles.cardTitle}>You also get:</Text>
+
           <View style={styles.feature}>
-            <Ionicons name="checkmark-circle" size={24} color={COLORS.success} />
-            <Text style={styles.featureText}>Post RV Rentals, Land Stays & Storage listings</Text>
+            <Ionicons name="finger-print" size={22} color={COLORS.primary} />
+            <Text style={styles.featureText}>
+              ID-verified status — only verified members can book.
+            </Text>
           </View>
 
           <View style={styles.feature}>
-            <Ionicons name="checkmark-circle" size={24} color={COLORS.success} />
-            <Text style={styles.featureText}>Book and reserve listings</Text>
+            <Ionicons name="ribbon" size={22} color={COLORS.primary} />
+            <Text style={styles.featureText}>
+              Verified badge on your profile — hosts trust you faster.
+            </Text>
           </View>
 
           <View style={styles.feature}>
-            <Ionicons name="checkmark-circle" size={24} color={COLORS.success} />
-            <Text style={styles.featureText}>Contact listing owners</Text>
+            <Ionicons name="chatbubbles" size={22} color={COLORS.primary} />
+            <Text style={styles.featureText}>
+              Direct messaging with hosts (unverified guests can't contact owners).
+            </Text>
           </View>
 
           <View style={styles.feature}>
-            <Ionicons name="checkmark-circle" size={24} color={COLORS.success} />
-            <Text style={styles.featureText}>Build trust with verified badge</Text>
+            <Ionicons name="heart" size={22} color={COLORS.primary} />
+            <Text style={styles.featureText}>
+              Save favorites and rebook in one tap.
+            </Text>
           </View>
         </View>
 
         <View style={styles.priceCard}>
-          <Text style={styles.priceLabel}>One-time fee</Text>
+          <Text style={styles.priceLabel}>One-time fee · pays for itself in 1 trip</Text>
           <Text style={styles.price}>$14.99</Text>
           <Text style={styles.priceNote}>Secure payment via Stripe</Text>
         </View>
@@ -139,15 +167,16 @@ export default function Verification() {
           ) : (
             <>
               <Ionicons name="shield-checkmark" size={20} color={COLORS.surface} />
-              <Text style={styles.verifyButtonText}>Verify Now</Text>
+              <Text style={styles.verifyButtonText}>Get Furrst-Checked</Text>
             </>
           )}
         </TouchableOpacity>
 
         <Text style={styles.disclaimer}>
-          By proceeding, you'll be redirected to Stripe's secure payment page. 
-          Your payment information is never stored on our servers.
+          You'll be redirected to Stripe's secure payment page.{'\n'}
+          We never store your card information.
         </Text>
+        </ScrollView>
       </View>
     </SafeAreaView>
   );
@@ -202,6 +231,61 @@ const styles = StyleSheet.create({
     padding: SPACING.lg,
     marginBottom: SPACING.lg,
     ...SHADOWS.medium,
+  },
+  savingsCard: {
+    backgroundColor: COLORS.surface,
+    borderRadius: 12,
+    padding: 0,
+    marginBottom: SPACING.lg,
+    overflow: 'hidden',
+    ...SHADOWS.medium,
+  },
+  savingsHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACING.xs,
+    backgroundColor: COLORS.primary,
+    paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.sm,
+  },
+  savingsHeaderText: {
+    color: COLORS.surface,
+    fontWeight: '700',
+    fontSize: 14,
+  },
+  savingsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.sm,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border,
+  },
+  savingsRowLabel: {
+    fontSize: 14,
+    color: COLORS.textLight,
+  },
+  savingsRowValue: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: COLORS.text,
+  },
+  savingsRowGood: {
+    color: COLORS.success || '#1B5E20',
+  },
+  savingsExample: {
+    padding: SPACING.md,
+    backgroundColor: '#F0F7F0',
+  },
+  savingsExampleText: {
+    fontSize: 13,
+    color: COLORS.text,
+    lineHeight: 18,
+  },
+  savingsHighlight: {
+    fontWeight: '700',
+    color: COLORS.primary,
   },
   cardTitle: {
     ...TYPOGRAPHY.h3,
