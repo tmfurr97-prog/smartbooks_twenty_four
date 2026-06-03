@@ -193,6 +193,50 @@ export default function TaxxProfile() {
           </Button>
         </CardContent>
       </Card>
+
+      <Card className="bg-card border-border">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Lightbulb className="w-5 h-5 text-primary" />
+            Smart Recommendations
+          </CardTitle>
+          <CardDescription>
+            Personalized guidance based on the numbers above. Informational only, not taxx advice.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {recommendations.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              Add your income, expenses, and deductions above to see tailored suggestions.
+            </p>
+          ) : (
+            <ul className="space-y-3">
+              {recommendations.map((r) => (
+                <li
+                  key={r.id}
+                  className="rounded-lg border border-border p-4 bg-background"
+                >
+                  <div className="flex items-start justify-between gap-3 mb-2">
+                    <h3 className="font-semibold text-foreground">{r.title}</h3>
+                    <div className="flex gap-2 shrink-0">
+                      <Badge variant="outline" className={priorityStyles[r.priority]}>
+                        {r.priority}
+                      </Badge>
+                      <Badge variant="secondary" className="uppercase text-xs">
+                        {r.tier}
+                      </Badge>
+                    </div>
+                  </div>
+                  <p className="text-sm text-foreground/80">{r.message}</p>
+                  {r.action && (
+                    <p className="text-xs font-medium text-primary mt-2">{r.action}</p>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }
