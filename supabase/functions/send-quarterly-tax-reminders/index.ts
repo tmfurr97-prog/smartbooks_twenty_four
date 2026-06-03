@@ -30,6 +30,29 @@ Deno.serve(async (req) => {
     reminderDate.setDate(reminderDate.getDate() + 14);
     const reminderDateStr = reminderDate.toISOString().split("T")[0];
 
+    // Restrict reminders to small business users (have a business profile)
+    const { data: bizProfiles, error: bizErr } = await supabase
+      .from("tax_profiles")
+      .select("user_id")
+      .not("business_name", "is", null);
+
+    if (bizErr) {
+      console.error("Error fetching business profiles:", bizErr);
+      return new Response(JSON.stringify({ error: bizErr.message }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const businessUserIds = Array.from(new Set((bizProfiles || []).map((p: any) => p.user_id))).filter(Boolean);
+
+    if (businessUserIds.length === 0) {
+      console.log("No small business users found; skipping.");
+      return new Response(JSON.stringify({ success: true, reminders_sent: 0 }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     // Find unpaid payments due within 14 days that haven't been reminded
     const { data: payments, error } = await supabase
       .from("estimated_tax_payments")
@@ -37,7 +60,8 @@ Deno.serve(async (req) => {
       .eq("status", "pending")
       .eq("reminder_sent", false)
       .lte("due_date", reminderDateStr)
-      .gte("due_date", today.toISOString().split("T")[0]);
+      .gte("due_date", today.toISOString().split("T")[0])
+      .in("user_id", businessUserIds);
 
     if (error) {
       console.error("Error fetching payments:", error);
@@ -48,6 +72,7 @@ Deno.serve(async (req) => {
     }
 
     console.log(`Found ${payments?.length || 0} payments needing reminders`);
+
 
     let remindersSent = 0;
 
