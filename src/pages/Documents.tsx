@@ -16,7 +16,7 @@ const CATEGORIES = [
   { value: "id", label: "ID / License" },
   { value: "expense", label: "Business Expense" },
   { value: "bank_statement", label: "Bank Statement" },
-  { value: "tax_return", label: "tax Return" },
+  { value: "tax_return", label: "Prior Yr Return(s)" },
   { value: "insurance", label: "Insurance" },
   { value: "investment", label: "Investment" },
   { value: "other", label: "Other" },
