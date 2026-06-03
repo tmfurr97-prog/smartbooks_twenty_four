@@ -1,0 +1,1 @@
+ALTER TABLE public.documents ADD COLUMN IF NOT EXISTS extracted_data jsonb; ALTER TABLE public.documents ADD COLUMN IF NOT EXISTS extracted_text text;
