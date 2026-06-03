@@ -20,6 +20,8 @@ import {
   Bitcoin,
   UserCog,
   FileText,
+  Sparkles,
+  Wrench,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
@@ -28,6 +30,7 @@ const navItems = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
   { icon: UserCog, label: "Taxx Profile", path: "/dashboard/taxx-profile" },
   { icon: FileText, label: "Return Preview", path: "/dashboard/return-preview" },
+  { icon: Sparkles, label: "Recommendations", path: "/dashboard/recommendations" },
   { icon: Upload, label: "Documents", path: "/dashboard/documents" },
   { icon: CreditCard, label: "Transactions", path: "/dashboard/transactions" },
   { icon: Link2, label: "Matching", path: "/dashboard/matching" },
@@ -43,6 +46,7 @@ const navItems = [
   { icon: HeartPulse, label: "Health Check", path: "/dashboard/health-check" },
   { icon: Building2, label: "Business Entities", path: "/dashboard/business-entities" },
   { icon: Bitcoin, label: "Crypto Taxes", path: "/dashboard/crypto-taxes" },
+  { icon: Wrench, label: "Admin Console", path: "/dashboard/admin" },
 ];
 
 interface DashboardSidebarProps {

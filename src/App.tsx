@@ -28,6 +28,8 @@ import BusinessEntities from "./pages/BusinessEntities";
 import CryptoTaxes from "./pages/CryptoTaxes";
 import TaxxProfile from "./pages/TaxxProfile";
 import ReturnPreview from "./pages/ReturnPreview";
+import Recommendations from "./pages/Recommendations";
+import AdminConsole from "./pages/AdminConsole";
 import BlogList from "./pages/BlogList";
 import BlogPost from "./pages/BlogPost";
 import Features from "./pages/Features";
@@ -76,6 +78,8 @@ const App = () => (
               <Route path="crypto-taxes" element={<CryptoTaxes />} />
               <Route path="taxx-profile" element={<TaxxProfile />} />
               <Route path="return-preview" element={<ReturnPreview />} />
+              <Route path="recommendations" element={<Recommendations />} />
+              <Route path="admin" element={<AdminConsole />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

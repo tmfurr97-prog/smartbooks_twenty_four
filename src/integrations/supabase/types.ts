@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_corrections: {
+        Row: {
+          client_user_id: string
+          created_at: string
+          field_name: string
+          id: string
+          new_value: string | null
+          old_value: string | null
+          preparer_user_id: string
+          reason: string | null
+          table_name: string
+        }
+        Insert: {
+          client_user_id: string
+          created_at?: string
+          field_name: string
+          id?: string
+          new_value?: string | null
+          old_value?: string | null
+          preparer_user_id: string
+          reason?: string | null
+          table_name: string
+        }
+        Update: {
+          client_user_id?: string
+          created_at?: string
+          field_name?: string
+          id?: string
+          new_value?: string | null
+          old_value?: string | null
+          preparer_user_id?: string
+          reason?: string | null
+          table_name?: string
+        }
+        Relationships: []
+      }
       documents: {
         Row: {
           ai_category: string | null
