@@ -253,7 +253,7 @@ export default function Documents() {
     <div className="space-y-8">
       <div>
         <h1 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-2">Documents</h1>
-        <p className="text-muted-foreground">Upload and manage your tax documents — AI handles sorting and naming.</p>
+        <p className="text-muted-foreground">Upload your taxx docs as you get them. We'll sort, name, and pre-fill your return for you.</p>
       </div>
 
       {/* Upload area */}
