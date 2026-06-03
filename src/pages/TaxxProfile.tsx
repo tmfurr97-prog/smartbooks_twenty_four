@@ -298,12 +298,12 @@ export default function TaxxProfile() {
         <div>
           <h1 className="text-2xl font-heading font-bold text-foreground">Taxx Profile</h1>
           <p className="text-foreground">
-            Complete data set used by AI to auto-populate your taxx return.
+            Your complete taxx information. Upload a prior return or any taxx doc to pre-fill these fields for you.
           </p>
         </div>
         <Badge className="bg-gold/15 text-foreground border-gold/40 gap-1">
           <ShieldCheck className="w-3 h-3" />
-          AI Return-Ready: {completeness}%
+          Return-Ready: {completeness}%
         </Badge>
       </div>
 
