@@ -54,6 +54,11 @@ export default function PreparerCredentialsBanner({ preparer }: { preparer: Prep
           </div>
           {preparer.bio && <p className="mt-2 text-sm text-foreground">{preparer.bio}</p>}
         </div>
+        <img
+          src={ptinBadge.url}
+          alt="Registered Taxx Professional - verified PTIN"
+          className="w-16 h-16 shrink-0 hidden sm:block"
+        />
       </div>
     </Card>
   );
