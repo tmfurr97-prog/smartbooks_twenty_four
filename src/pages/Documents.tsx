@@ -326,24 +326,92 @@ export default function Documents() {
         </Card>
       ) : (
         <div className="space-y-3">
-          {documents.map((doc: any) => (
-            <Card key={doc.id} className="p-4 flex items-center gap-4">
-              <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
-                <FileText className="w-5 h-5 text-accent" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-medium text-foreground truncate">{doc.file_name}</p>
-                {doc.suggested_name && doc.suggested_name !== doc.file_name && (
-                  <p className="text-xs text-accent truncate flex items-center gap-1">
-                    <Brain className="w-3 h-3" />
-                    {doc.suggested_name}
-                  </p>
+          {documents.map((doc: any) => {
+            const ex = doc.extracted_data;
+            const totals = ex?.totals ?? {};
+            const totalEntries = Object.entries(totals).filter(
+              ([, v]) => typeof v === "number" && !isNaN(v as number),
+            ) as [string, number][];
+            const fmt = (n: number) =>
+              `$${n.toLocaleString("en-US", { maximumFractionDigits: 2 })}`;
+            const labelize = (k: string) =>
+              k.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+            return (
+              <Card key={doc.id} className="p-4 flex flex-col gap-3">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
+                    <FileText className="w-5 h-5 text-accent" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-foreground truncate">{doc.file_name}</p>
+                    {doc.suggested_name && doc.suggested_name !== doc.file_name && (
+                      <p className="text-xs text-accent truncate flex items-center gap-1">
+                        <Brain className="w-3 h-3" />
+                        {doc.suggested_name}
+                      </p>
+                    )}
+                    <p className="text-xs text-muted-foreground">
+                      {CATEGORIES.find((c) => c.value === (doc.ai_category || doc.category))?.label ?? doc.category} ·{" "}
+                      {formatFileSize(doc.file_size)} · {format(new Date(doc.created_at), "MMM d, yyyy")}
+                      {ex?.document_type ? ` · ${ex.document_type}` : ""}
+                      {ex?.period ? ` · ${ex.period}` : ""}
+                    </p>
+                  </div>
+                  <div className="flex gap-2 shrink-0">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleDownload(doc.storage_path, doc.file_name)}
+                      aria-label="Download"
+                    >
+                      <Download className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => deleteMutation.mutate({ id: doc.id, storage_path: doc.storage_path })}
+                      aria-label="Delete"
+                    >
+                      <Trash2 className="w-4 h-4 text-destructive" />
+                    </Button>
+                  </div>
+                </div>
+
+                {totalEntries.length > 0 && (
+                  <div className="rounded-lg bg-accent/5 border border-accent/20 p-3">
+                    <p className="text-xs font-semibold text-accent mb-2 flex items-center gap-1">
+                      <Brain className="w-3 h-3" /> AI-extracted figures
+                    </p>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm">
+                      {totalEntries.map(([k, v]) => (
+                        <div key={k}>
+                          <p className="text-xs text-muted-foreground">{labelize(k)}</p>
+                          <p className="font-medium text-foreground">{fmt(v)}</p>
+                        </div>
+                      ))}
+                    </div>
+                    {Array.isArray(ex?.line_items) && ex.line_items.length > 0 && (
+                      <details className="mt-3">
+                        <summary className="text-xs font-medium text-accent cursor-pointer">
+                          {ex.line_items.length} line items
+                        </summary>
+                        <div className="mt-2 space-y-1 max-h-48 overflow-y-auto">
+                          {ex.line_items.map((li: any, i: number) => (
+                            <div key={i} className="flex justify-between text-xs">
+                              <span className="text-foreground truncate pr-2">{li.label}</span>
+                              <span className="text-muted-foreground shrink-0">
+                                {typeof li.amount === "number" ? fmt(li.amount) : "-"}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </details>
+                    )}
+                  </div>
                 )}
-                <p className="text-xs text-muted-foreground">
-                  {CATEGORIES.find((c) => c.value === (doc.ai_category || doc.category))?.label ?? doc.category} ·{" "}
-                  {formatFileSize(doc.file_size)} · {format(new Date(doc.created_at), "MMM d, yyyy")}
-                </p>
-              </div>
+              </Card>
+            );
+          })}
               <div className="flex gap-2 shrink-0">
                 <Button
                   variant="ghost"
