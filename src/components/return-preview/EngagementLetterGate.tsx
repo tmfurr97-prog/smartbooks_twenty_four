@@ -41,12 +41,15 @@ export default function EngagementLetterGate({ preparer, taxYear, onAcknowledge,
           {preparer && (
             <div className="flex items-start gap-3 bg-gold/5 border border-gold/30 rounded-lg p-3">
               <ShieldCheck className="w-5 h-5 text-gold mt-0.5 shrink-0" />
-              <div className="text-sm text-foreground">
+              <div className="text-sm text-foreground flex-1">
                 <p className="font-semibold">{preparer.display_name}</p>
-                <p>
-                  {preparer.credentials.join(", ")}
-                </p>
+                <p>{preparer.credentials.join(", ")}</p>
               </div>
+              <img
+                src={ptinBadge.url}
+                alt="Registered Taxx Professional - verified PTIN"
+                className="w-12 h-12 shrink-0"
+              />
             </div>
           )}
 
