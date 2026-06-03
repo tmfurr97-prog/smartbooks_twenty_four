@@ -26,6 +26,7 @@ import Backups from "./pages/Backups";
 import HealthCheck from "./pages/HealthCheck";
 import BusinessEntities from "./pages/BusinessEntities";
 import CryptoTaxes from "./pages/CryptoTaxes";
+import TaxxProfile from "./pages/TaxxProfile";
 import BlogList from "./pages/BlogList";
 import BlogPost from "./pages/BlogPost";
 import Features from "./pages/Features";
