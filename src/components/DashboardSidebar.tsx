@@ -18,12 +18,14 @@ import {
   HeartPulse,
   Building2,
   Bitcoin,
+  UserCog,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 
 const navItems = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
+  { icon: UserCog, label: "Taxx Profile", path: "/dashboard/taxx-profile" },
   { icon: Upload, label: "Documents", path: "/dashboard/documents" },
   { icon: CreditCard, label: "Transactions", path: "/dashboard/transactions" },
   { icon: Link2, label: "Matching", path: "/dashboard/matching" },

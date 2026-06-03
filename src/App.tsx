@@ -26,6 +26,7 @@ import Backups from "./pages/Backups";
 import HealthCheck from "./pages/HealthCheck";
 import BusinessEntities from "./pages/BusinessEntities";
 import CryptoTaxes from "./pages/CryptoTaxes";
+import TaxxProfile from "./pages/TaxxProfile";
 import BlogList from "./pages/BlogList";
 import BlogPost from "./pages/BlogPost";
 import Features from "./pages/Features";
@@ -72,6 +73,7 @@ const App = () => (
               <Route path="health-check" element={<HealthCheck />} />
               <Route path="business-entities" element={<BusinessEntities />} />
               <Route path="crypto-taxes" element={<CryptoTaxes />} />
+              <Route path="taxx-profile" element={<TaxxProfile />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

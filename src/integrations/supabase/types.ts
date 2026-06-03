@@ -239,6 +239,42 @@ export type Database = {
         }
         Relationships: []
       }
+      tax_profiles: {
+        Row: {
+          created_at: string
+          expenses: number
+          filing_status: Database["public"]["Enums"]["filing_status"]
+          home_office_deduction: number
+          id: string
+          income: number
+          mileage: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expenses?: number
+          filing_status?: Database["public"]["Enums"]["filing_status"]
+          home_office_deduction?: number
+          id?: string
+          income?: number
+          mileage?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expenses?: number
+          filing_status?: Database["public"]["Enums"]["filing_status"]
+          home_office_deduction?: number
+          id?: string
+          income?: number
+          mileage?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       transactions: {
         Row: {
           amount: number
@@ -356,6 +392,7 @@ export type Database = {
     }
     Enums: {
       app_role: "client" | "preparer" | "admin"
+      filing_status: "single" | "married" | "head_of_household"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -484,6 +521,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["client", "preparer", "admin"],
+      filing_status: ["single", "married", "head_of_household"],
     },
   },
 } as const
