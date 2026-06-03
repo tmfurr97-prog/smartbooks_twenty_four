@@ -48,6 +48,13 @@ export default function TaxxProfile() {
   }, [user]);
 
   const calculated = calculateTaxxProfile(profile);
+  const recommendations = generateRecommendations(calculated);
+
+  const priorityStyles: Record<RecommendationPriority, string> = {
+    high: "bg-red-500/15 text-red-700 border-red-500/30",
+    medium: "bg-amber-500/15 text-amber-700 border-amber-500/30",
+    low: "bg-emerald-500/15 text-emerald-700 border-emerald-500/30",
+  };
 
   const save = async () => {
     if (!user) return;
