@@ -179,7 +179,7 @@ export default function Documents() {
 
           toast({
             title: `${file.name} uploaded`,
-            description: `Auto-categorized as ${CATEGORIES.find((c) => c.value === aiCategory)?.label ?? aiCategory}. Extracting data…`,
+            description: `Filed under ${CATEGORIES.find((c) => c.value === aiCategory)?.label ?? aiCategory}. Reading your info…`,
           });
 
           // Step 5: Extract numbers/data from file contents (fire and forget per file)
@@ -202,11 +202,11 @@ export default function Documents() {
                 const count = result.filled_fields?.length ?? 0;
                 if (count > 0) {
                   toast({
-                    title: `${count} profile field${count === 1 ? "" : "s"} auto-filled`,
-                    description: `From ${file.name}. Review in Taxx Profile.`,
+                    title: `Pre-filled ${count} field${count === 1 ? "" : "s"} from ${file.name}`,
+                    description: `Review and edit anytime in your Taxx Profile.`,
                   });
                 } else {
-                  toast({ title: `Data extracted from ${file.name}` });
+                  toast({ title: `Saved info from ${file.name}` });
                 }
               }
             } catch {
