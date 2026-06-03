@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Award, ShieldCheck, User as UserIcon } from "lucide-react";
+import ptinBadge from "@/assets/ptin-badge.png.asset.json";
 
 export interface PreparerProfile {
   display_name: string;
