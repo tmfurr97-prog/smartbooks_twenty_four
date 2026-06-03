@@ -12,15 +12,20 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SPACING, TYPOGRAPHY } from '../../constants/theme';
 import api from '../../services/api';
+import SignInPrompt from '../../components/SignInPrompt';
+import { useAuthStore } from '../../store/authStore';
 
 export default function Messages() {
   const router = useRouter();
+  const user = useAuthStore((state) => state.user);
   const [conversations, setConversations] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    loadConversations();
-  }, []);
+    if (user) {
+      loadConversations();
+    }
+  }, [user]);
 
   const loadConversations = async () => {
     try {
@@ -53,7 +58,14 @@ export default function Messages() {
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
-      <FlatList
+      {!user ? (
+        <SignInPrompt
+          icon="chatbubbles-outline"
+          title="Chat with hosts & guests"
+          subtitle="Sign in to message listing owners and reply to booking inquiries."
+        />
+      ) : (
+        <FlatList
         data={conversations}
         renderItem={renderConversation}
         keyExtractor={(item) => item.conversation_id}
@@ -78,6 +90,7 @@ export default function Messages() {
           </View>
         }
       />
+      )}
     </SafeAreaView>
   );
 }

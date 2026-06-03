@@ -65,6 +65,17 @@ export default function Browse() {
   };
 
   const handleCreateListing = () => {
+    if (!user) {
+      Alert.alert(
+        'Sign In Required',
+        'Create an account or sign in to list your RV, land, storage, or boat.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Sign In', onPress: () => router.push('/(auth)/login') },
+        ]
+      );
+      return;
+    }
     if (!user?.is_verified) {
       Alert.alert(
         'Verification Required',
@@ -156,15 +167,26 @@ export default function Browse() {
         {/* HERO BANNER */}
         <View style={styles.hero}>
           <View style={styles.heroTopRow}>
-            <View>
+            <View style={{ flex: 1 }}>
               <Text style={styles.heroBrand}>FurrstCamp Travel</Text>
               <Text style={styles.heroTagline}>
                 The Gold Standard of Verified Outdoor Stays
               </Text>
             </View>
-            <TouchableOpacity style={styles.createIconBtn} onPress={handleCreateListing}>
-              <Ionicons name="add-circle" size={32} color={COLORS.coral} />
-            </TouchableOpacity>
+            {user ? (
+              <TouchableOpacity style={styles.createIconBtn} onPress={handleCreateListing}>
+                <Ionicons name="add-circle" size={32} color={COLORS.coral} />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={styles.signInPill}
+                onPress={() => router.push('/(auth)/login')}
+                activeOpacity={0.85}
+              >
+                <Ionicons name="person-circle-outline" size={18} color={COLORS.surface} />
+                <Text style={styles.signInPillText}>Sign In</Text>
+              </TouchableOpacity>
+            )}
           </View>
           <Text style={styles.heroHeadline}>
             RVs, land, storage & boats.{'\n'}All in one place.
@@ -301,6 +323,22 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.12)',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  signInPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: SPACING.md,
+    paddingVertical: 10,
+    borderRadius: 22,
+    backgroundColor: 'rgba(255,255,255,0.18)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.35)',
+  },
+  signInPillText: {
+    color: COLORS.surface,
+    fontWeight: '700',
+    fontSize: 14,
   },
   heroHeadline: {
     fontSize: 28,

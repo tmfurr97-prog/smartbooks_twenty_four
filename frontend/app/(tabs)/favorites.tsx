@@ -14,16 +14,23 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SPACING, TYPOGRAPHY, SHADOWS } from '../../constants/theme';
 import api from '../../services/api';
 import LegalFooter from '../../components/LegalFooter';
+import SignInPrompt from '../../components/SignInPrompt';
+import { useAuthStore } from '../../store/authStore';
 
 export default function Favorites() {
   const router = useRouter();
+  const user = useAuthStore((state) => state.user);
   const [favorites, setFavorites] = useState<any[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    load();
-  }, []);
+    if (user) {
+      load();
+    } else {
+      setLoading(false);
+    }
+  }, [user]);
 
   const load = async () => {
     try {
@@ -82,7 +89,14 @@ export default function Favorites() {
         <Ionicons name="heart" size={24} color={COLORS.coral} />
         <Text style={styles.headerTitle}>Favorites</Text>
       </View>
-      <FlatList
+      {!user ? (
+        <SignInPrompt
+          icon="heart-outline"
+          title="Save your favorite spots"
+          subtitle="Sign in to bookmark RVs, land, storage, and boat docks you love."
+        />
+      ) : (
+        <FlatList
         data={favorites}
         renderItem={renderCard}
         keyExtractor={(item) => item.id}
@@ -109,6 +123,7 @@ export default function Favorites() {
           </View>
         }
       />
+      )}
       <LegalFooter />
     </SafeAreaView>
   );

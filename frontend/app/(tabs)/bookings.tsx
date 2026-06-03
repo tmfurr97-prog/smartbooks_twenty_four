@@ -13,17 +13,22 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SPACING, TYPOGRAPHY } from '../../constants/theme';
 import api from '../../services/api';
 import LegalFooter from '../../components/LegalFooter';
+import SignInPrompt from '../../components/SignInPrompt';
+import { useAuthStore } from '../../store/authStore';
 import { confirm } from '../../utils/dialog';
 
 export default function Bookings() {
+  const user = useAuthStore((state) => state.user);
   const [guestBookings, setGuestBookings] = useState<any[]>([]);
   const [hostBookings, setHostBookings] = useState<any[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState<'guest' | 'host'>('guest');
 
   useEffect(() => {
-    loadBookings();
-  }, []);
+    if (user) {
+      loadBookings();
+    }
+  }, [user]);
 
   const loadBookings = async () => {
     try {
@@ -198,6 +203,19 @@ export default function Bookings() {
   };
 
   const bookings = activeTab === 'guest' ? guestBookings : hostBookings;
+
+  if (!user) {
+    return (
+      <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+        <SignInPrompt
+          icon="calendar-outline"
+          title="Track your bookings"
+          subtitle="Sign in to view trips you've booked and hosting requests waiting on you."
+        />
+        <LegalFooter />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>

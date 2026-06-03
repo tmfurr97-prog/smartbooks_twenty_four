@@ -14,17 +14,31 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SPACING, TYPOGRAPHY, SHADOWS } from '../../constants/theme';
 import { useAuthStore } from '../../store/authStore';
 import LegalFooter from '../../components/LegalFooter';
+import SignInPrompt from '../../components/SignInPrompt';
 import { confirm } from '../../utils/dialog';
 
 export default function Profile() {
   const router = useRouter();
   const { user, logout } = useAuthStore();
 
+  if (!user) {
+    return (
+      <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+        <SignInPrompt
+          icon="person-circle-outline"
+          title="Your FurrstCamp account"
+          subtitle="Sign in to manage listings, complete verification, and review your activity."
+        />
+        <LegalFooter />
+      </SafeAreaView>
+    );
+  }
+
   const handleLogout = async () => {
     const ok = await confirm('Logout', 'Are you sure you want to logout?', 'Logout', 'Cancel', true);
     if (!ok) return;
     await logout();
-    router.replace('/(auth)/login');
+    router.replace('/(tabs)');
   };
 
   const menuItems = [

@@ -52,6 +52,17 @@ export default function ListingDetail() {
   };
 
   const handleContact = () => {
+    if (!user) {
+      Alert.alert(
+        'Sign In Required',
+        'Create an account or sign in to message hosts.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Sign In', onPress: () => router.push('/(auth)/login') },
+        ]
+      );
+      return;
+    }
     if (!user?.is_verified) {
       Alert.alert(
         'Verification Required',
@@ -72,6 +83,17 @@ export default function ListingDetail() {
   };
 
   const handleBook = async () => {
+    if (!user) {
+      Alert.alert(
+        'Sign In Required',
+        'Create an account or sign in to book this listing.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Sign In', onPress: () => router.push('/(auth)/login') },
+        ]
+      );
+      return;
+    }
     if (!user?.is_verified) {
       Alert.alert(
         'Verification Required',
@@ -191,6 +213,17 @@ export default function ListingDetail() {
         <TouchableOpacity
           style={styles.backButton}
           onPress={async () => {
+            if (!user) {
+              Alert.alert(
+                'Sign In Required',
+                'Create an account or sign in to save favorites.',
+                [
+                  { text: 'Cancel', style: 'cancel' },
+                  { text: 'Sign In', onPress: () => router.push('/(auth)/login') },
+                ]
+              );
+              return;
+            }
             try {
               if (isFavorite) {
                 await api.delete(`/api/favorites/${listing.id}`);
@@ -200,7 +233,7 @@ export default function ListingDetail() {
                 setIsFavorite(true);
               }
             } catch (e) {
-              Alert.alert('Error', 'Please log in to save favorites');
+              Alert.alert('Error', 'Could not update favorites. Please try again.');
             }
           }}
         >

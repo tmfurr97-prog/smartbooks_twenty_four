@@ -6,17 +6,15 @@ import { COLORS } from '../constants/theme';
 
 export default function Index() {
   const router = useRouter();
-  const { token, user, isLoading } = useAuthStore();
+  const { isLoading } = useAuthStore();
 
+  // Always land on the public Browse tab. Login is reachable from the home
+  // screen and from any protected tab — no forced auth gate up-front.
   useEffect(() => {
     if (!isLoading) {
-      if (token && user) {
-        router.replace('/(tabs)');
-      } else {
-        router.replace('/(auth)/login');
-      }
+      router.replace('/(tabs)');
     }
-  }, [token, user, isLoading]);
+  }, [isLoading]);
 
   return (
     <View style={styles.container}>
