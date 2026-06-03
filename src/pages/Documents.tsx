@@ -295,7 +295,7 @@ export default function Documents() {
           {analyzing ? (
             <>
               <Brain className="w-10 h-10 text-accent animate-pulse" />
-              <p className="text-muted-foreground text-center text-sm">Analyzing document with AI…</p>
+              <p className="text-muted-foreground text-center text-sm">Reading your document…</p>
             </>
           ) : uploading ? (
             <>
