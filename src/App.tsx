@@ -22,6 +22,7 @@ import YearEndChecklist from "./pages/YearEndChecklist";
 import QuarterlyTaxes from "./pages/QuarterlyTaxes";
 import AuditDefense from "./pages/AuditDefense";
 import EFile from "./pages/EFile";
+import InformationReturns from "./pages/InformationReturns";
 import Backups from "./pages/Backups";
 import HealthCheck from "./pages/HealthCheck";
 import BusinessEntities from "./pages/BusinessEntities";
@@ -75,6 +76,7 @@ const App = () => (
               <Route path="quarterly-taxes" element={<QuarterlyTaxes />} />
               <Route path="audit-defense" element={<AuditDefense />} />
               <Route path="efile" element={<EFile />} />
+              <Route path="information-returns" element={<InformationReturns />} />
               <Route path="backups" element={<Backups />} />
               <Route path="health-check" element={<HealthCheck />} />
               <Route path="business-entities" element={<BusinessEntities />} />
