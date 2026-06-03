@@ -412,26 +412,6 @@ export default function Documents() {
               </Card>
             );
           })}
-              <div className="flex gap-2 shrink-0">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => handleDownload(doc.storage_path, doc.file_name)}
-                  aria-label="Download"
-                >
-                  <Download className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => deleteMutation.mutate({ id: doc.id, storage_path: doc.storage_path })}
-                  aria-label="Delete"
-                >
-                  <Trash2 className="w-4 h-4 text-destructive" />
-                </Button>
-              </div>
-            </Card>
-          ))}
         </div>
       )}
     </div>
