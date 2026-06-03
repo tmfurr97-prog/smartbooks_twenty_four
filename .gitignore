@@ -80,3 +80,8 @@ test_credentials.md
 # MongoDB
 data/
 mongod.lock
+.env
+.env.*
+*.env
+credentials.json
+.credentials
