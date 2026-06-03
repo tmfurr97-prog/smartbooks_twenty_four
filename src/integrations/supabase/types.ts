@@ -206,6 +206,13 @@ export type Database = {
             referencedRelation: "preparer_profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "engagement_letters_preparer_id_fkey"
+            columns: ["preparer_id"]
+            isOneToOne: false
+            referencedRelation: "preparer_profiles_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       estimated_tax_payments: {
@@ -768,7 +775,45 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      preparer_profiles_public: {
+        Row: {
+          accepting_clients: boolean | null
+          bio: string | null
+          created_at: string | null
+          credentials: string[] | null
+          display_name: string | null
+          headshot_url: string | null
+          id: string | null
+          qb_certifications: string[] | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          accepting_clients?: boolean | null
+          bio?: string | null
+          created_at?: string | null
+          credentials?: string[] | null
+          display_name?: string | null
+          headshot_url?: string | null
+          id?: string | null
+          qb_certifications?: string[] | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          accepting_clients?: boolean | null
+          bio?: string | null
+          created_at?: string | null
+          credentials?: string[] | null
+          display_name?: string | null
+          headshot_url?: string | null
+          id?: string | null
+          qb_certifications?: string[] | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       has_role: {

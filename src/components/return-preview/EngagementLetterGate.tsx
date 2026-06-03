@@ -44,7 +44,6 @@ export default function EngagementLetterGate({ preparer, taxYear, onAcknowledge,
                 <p className="font-semibold">{preparer.display_name}</p>
                 <p>
                   {preparer.credentials.join(", ")}
-                  {preparer.ptin ? ` · PTIN ${preparer.ptin}` : ""}
                 </p>
               </div>
             </div>

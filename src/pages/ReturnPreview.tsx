@@ -53,7 +53,7 @@ export default function ReturnPreview() {
           .eq("tax_year", TAX_YEAR)
           .eq("version_hash", hash)
           .maybeSingle(),
-        supabase.from("preparer_profiles").select("*").limit(1).maybeSingle(),
+        supabase.from("preparer_profiles_public" as any).select("*").limit(1).maybeSingle(),
         supabase.from("tax_profiles").select("*").eq("user_id", user.id).maybeSingle(),
         supabase
           .from("transactions")
@@ -68,7 +68,7 @@ export default function ReturnPreview() {
       setHasProAccess(isAdminOrPreparer); // TODO: wire Stripe Pro tier here
 
       setAcknowledged(!!letterRes.data || isAdminOrPreparer);
-      setPreparer((prepRes.data as PreparerProfile | null) ?? null);
+      setPreparer(((prepRes.data as unknown) as PreparerProfile | null) ?? null);
 
       const profile = profileRes.data;
       const txs = txRes.data ?? [];
