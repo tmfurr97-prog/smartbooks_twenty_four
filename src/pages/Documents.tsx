@@ -389,7 +389,7 @@ export default function Documents() {
                 {totalEntries.length > 0 && (
                   <div className="rounded-lg bg-accent/5 border border-accent/20 p-3">
                     <p className="text-xs font-semibold text-accent mb-2 flex items-center gap-1">
-                      <Brain className="w-3 h-3" /> AI-extracted figures
+                      <Brain className="w-3 h-3" /> Pre-filled from this document
                     </p>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm">
                       {totalEntries.map(([k, v]) => (
