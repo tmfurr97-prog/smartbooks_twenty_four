@@ -233,7 +233,7 @@ export default function TaxxProfile() {
         spouse_ssn: profile.spouse_ssn || null,
         spouse_date_of_birth: profile.spouse_date_of_birth || null,
         spouse_occupation: profile.spouse_occupation || null,
-        dependents: profile.dependents,
+        dependents: profile.dependents as unknown as never,
         w2_wages: profile.w2_wages,
         federal_withholding: profile.federal_withholding,
         state_withholding: profile.state_withholding,
