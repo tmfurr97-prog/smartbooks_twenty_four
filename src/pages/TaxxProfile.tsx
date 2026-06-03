@@ -8,8 +8,10 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { Calculator, Save, TrendingDown, DollarSign, FileText } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Calculator, Save, TrendingDown, DollarSign, FileText, Lightbulb } from "lucide-react";
 import { calculateTaxxProfile, MILEAGE_RATE } from "@/utils/taxCalculator";
+import { generateRecommendations, type RecommendationPriority } from "@/utils/recommendationEngine";
 import { createEmptyTaxxProfile, type FilingStatus, type TaxxProfile } from "@/types/taxProfile";
 
 export default function TaxxProfile() {
@@ -46,6 +48,13 @@ export default function TaxxProfile() {
   }, [user]);
 
   const calculated = calculateTaxxProfile(profile);
+  const recommendations = generateRecommendations(calculated);
+
+  const priorityStyles: Record<RecommendationPriority, string> = {
+    high: "bg-red-500/15 text-red-700 border-red-500/30",
+    medium: "bg-amber-500/15 text-amber-700 border-amber-500/30",
+    low: "bg-emerald-500/15 text-emerald-700 border-emerald-500/30",
+  };
 
   const save = async () => {
     if (!user) return;
@@ -182,6 +191,50 @@ export default function TaxxProfile() {
             <Save className="w-4 h-4 mr-2" />
             {saving ? "Saving..." : "Save Taxx Profile"}
           </Button>
+        </CardContent>
+      </Card>
+
+      <Card className="bg-card border-border">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Lightbulb className="w-5 h-5 text-primary" />
+            Smart Recommendations
+          </CardTitle>
+          <CardDescription>
+            Personalized guidance based on the numbers above. Informational only, not taxx advice.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {recommendations.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              Add your income, expenses, and deductions above to see tailored suggestions.
+            </p>
+          ) : (
+            <ul className="space-y-3">
+              {recommendations.map((r) => (
+                <li
+                  key={r.id}
+                  className="rounded-lg border border-border p-4 bg-background"
+                >
+                  <div className="flex items-start justify-between gap-3 mb-2">
+                    <h3 className="font-semibold text-foreground">{r.title}</h3>
+                    <div className="flex gap-2 shrink-0">
+                      <Badge variant="outline" className={priorityStyles[r.priority]}>
+                        {r.priority}
+                      </Badge>
+                      <Badge variant="secondary" className="uppercase text-xs">
+                        {r.tier}
+                      </Badge>
+                    </div>
+                  </div>
+                  <p className="text-sm text-foreground/80">{r.message}</p>
+                  {r.action && (
+                    <p className="text-xs font-medium text-primary mt-2">{r.action}</p>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
         </CardContent>
       </Card>
     </div>
