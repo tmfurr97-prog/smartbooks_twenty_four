@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import ptinBadge from "@/assets/ptin-badge.png.asset.json";
+import notaryBadge from "@/assets/notary-badge.png.asset.json";
 
 export default function WelcomeSection() {
   return (
@@ -18,8 +20,22 @@ export default function WelcomeSection() {
           appointments, store documents throughout the year, and receive an AI powered tax review before filing."
         </blockquote>
         <blockquote className="text-lg md:text-xl leading-relaxed text-primary-foreground/85 mb-10">
-          "I am here to make taxes easier, safer, and more convenient for you every step of the way."
+          "I am here to make taxxes easier, safer, and more convenient for you every step of the way."
         </blockquote>
+
+        <div className="flex items-center justify-center gap-8 md:gap-12 mb-10">
+          <img
+            src={ptinBadge.url}
+            alt="Registered Taxx Professional - verified PTIN"
+            className="h-24 md:h-28 w-auto"
+          />
+          <img
+            src={notaryBadge.url}
+            alt="Texas Online Notary Public"
+            className="h-24 md:h-28 w-auto"
+          />
+        </div>
+
         <Button variant="gold" size="lg" asChild>
           <Link to="/signup">Join SmartBooks Today</Link>
         </Button>
