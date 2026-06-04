@@ -536,6 +536,7 @@ async def check_booking_payment_status(
         "amount": payment["amount"]
     }
 
+@app.get("/api/payments/verification/status/{session_id}")
 async def check_verification_status(
     session_id: str,
     request: Request,
