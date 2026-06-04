@@ -197,33 +197,6 @@ export default function ListingDetail() {
     }
   };
 
-      Alert.alert(
-        'Booking Requested!',
-        `Total: $${response.data.total_price.toFixed(2)}` +
-          (response.data.security_deposit
-            ? `\n(includes $${response.data.security_deposit} refundable deposit hold)`
-            : '') +
-          statusMsg,
-        [
-          {
-            text: 'View Bookings',
-            onPress: () => {
-              setShowBookingModal(false);
-              router.push('/(tabs)/bookings');
-            },
-          },
-        ]
-      );
-    } catch (error: any) {
-      Alert.alert(
-        'Booking Failed',
-        error.response?.data?.detail || 'Could not create booking'
-      );
-    } finally {
-      setBookingLoading(false);
-    }
-  };
-
   if (loading) {
     return (
       <SafeAreaView style={styles.container}>
