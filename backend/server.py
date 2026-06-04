@@ -422,7 +422,16 @@ async def create_booking_checkout(
             "email": current_user["email"]
         }
     )
-    session: CheckoutSessionResponse = await stripe_checkout.create_checkout_session(checkout_request)
+    try:
+        session: CheckoutSessionResponse = await stripe_checkout.create_checkout_session(checkout_request)
+    except Exception as e:
+        msg = str(e)
+        if "Invalid API Key" in msg or "placeholder" in msg.lower():
+            raise HTTPException(
+                status_code=502,
+                detail="Payments are temporarily unavailable on this environment. The booking has been saved — please try again later or contact support.",
+            )
+        raise HTTPException(status_code=502, detail=f"Payment provider error: {msg[:200]}")
     
     await db.payment_transactions.insert_one({
         "user_id": current_user["_id"],

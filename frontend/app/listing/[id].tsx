@@ -18,6 +18,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SPACING, TYPOGRAPHY, SHADOWS } from '../../constants/theme';
 import { useAuthStore } from '../../store/authStore';
 import api from '../../services/api';
+import { notify } from '../../utils/dialog';
 
 const { width } = Dimensions.get('window');
 
@@ -112,12 +113,12 @@ export default function ListingDetail() {
   const proceedToBook = async () => {
 
     if (!startDate || !endDate) {
-      Alert.alert('Error', 'Please select start and end dates');
+      await notify('Missing dates', 'Please select start and end dates before booking.');
       return;
     }
 
     if (!bookingTosAccepted) {
-      Alert.alert(
+      await notify(
         'Terms of Service',
         'You must agree to the Terms of Service to complete a booking.'
       );
@@ -148,17 +149,53 @@ export default function ListingDetail() {
         );
         if (payRes.data?.url) {
           setShowBookingModal(false);
+          setBookingLoading(false);
           // Open Stripe Checkout
           if (typeof window !== 'undefined') {
             window.location.href = payRes.data.url;
           } else {
-            Alert.alert('Open Payment', `Go to: ${payRes.data.url}`);
+            await notify('Open Payment', `Go to: ${payRes.data.url}`);
           }
           return;
         }
       } catch (payErr: any) {
+        // Payment session creation failed (e.g., Stripe misconfig on this env).
+        // The booking itself was created — surface a clear message instead of dying silently.
         console.log('Payment session error:', payErr);
+        setBookingLoading(false);
+        const stripeMsg = payErr?.response?.data?.detail || payErr?.message || 'Unknown error';
+        await notify(
+          'Booking saved — payment unavailable',
+          `Your booking request was saved but we couldn't open the payment page right now.\n\n${stripeMsg}\n\nPlease try again from the Bookings tab, or contact support if this keeps happening.`
+        );
+        setShowBookingModal(false);
+        router.push('/(tabs)/bookings');
+        return;
       }
+
+      // Fallback path: no Stripe URL returned but no error either — show a confirmation.
+      setBookingLoading(false);
+      setShowBookingModal(false);
+      await notify(
+        'Booking Requested!',
+        `Total: $${response.data.total_price.toFixed(2)}` +
+          (response.data.security_deposit
+            ? `\n(includes $${response.data.security_deposit} refundable deposit hold)`
+            : '') +
+          statusMsg
+      );
+      router.push('/(tabs)/bookings');
+      return;
+    } catch (err: any) {
+      setBookingLoading(false);
+      const msg =
+        err?.response?.data?.detail ||
+        err?.message ||
+        "Something went wrong creating your booking. Please try again.";
+      await notify('Booking failed', String(msg));
+      return;
+    }
+  };
 
       Alert.alert(
         'Booking Requested!',
