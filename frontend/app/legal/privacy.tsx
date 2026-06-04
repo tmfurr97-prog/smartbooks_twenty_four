@@ -15,7 +15,7 @@ const SECTIONS = [
   {
     title: '1. Introduction',
     body:
-      'FurrstCamp Travel ("we", "our", "us") respects your privacy. This Privacy Policy explains what data we collect, how we use it, and your rights. By using our Platform, you consent to the practices described here.',
+      'Furrst CampTin ("we", "our", "us") respects your privacy. This Privacy Policy explains what data we collect, how we use it, and your rights. By using our Platform, you consent to the practices described here.',
   },
   {
     title: '2. Information We Collect',
@@ -104,7 +104,7 @@ export default function PrivacyPolicy() {
 
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.intro}>
-          Your privacy matters. This policy explains how FurrstCamp Travel
+          Your privacy matters. This policy explains how Furrst CampTin
           collects, uses, and protects your information.
         </Text>
 

@@ -26,7 +26,7 @@ export default function Profile() {
       <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
         <SignInPrompt
           icon="person-circle-outline"
-          title="Your FurrstCamp account"
+          title="Your CampTin account"
           subtitle="Sign in to manage listings, complete verification, and review your activity."
         />
         <LegalFooter />

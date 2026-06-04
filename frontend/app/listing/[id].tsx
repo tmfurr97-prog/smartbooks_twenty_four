@@ -515,7 +515,7 @@ export default function ListingDetail() {
                   >
                     Terms of Service
                   </Text>
-                  , and accept that FurrstCamp Travel is a platform provider and
+                  , and accept that Furrst CampTin is a platform provider and
                   does not provide insurance or legal representation.
                 </Text>
               </TouchableOpacity>

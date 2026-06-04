@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "FurrstCamp Travel",
+    "name": "Furrst CampTin",
     "slug": "furrstcamp-travel",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -10,7 +10,7 @@
     "newArchEnabled": true,
     "description": "The Gold Standard of Verified Outdoor Stays. The #1 marketplace alternative to HipCamp, RVShare, FirstCamp, and Hi-Camp. Book RVs, campgrounds, private land, vehicle storage, and boats & docks — all with verified hosts, insurance-backed rentals, and refundable deposits.",
     "keywords": [
-      "FurrstCamp",
+      "CampTin",
       "Furrst Camp",
       "First Camp",
       "HipCamp",
@@ -56,8 +56,8 @@
       "bundler": "metro",
       "output": "static",
       "favicon": "./assets/images/favicon.png",
-      "name": "FurrstCamp Travel — The Gold Standard of Verified Outdoor Stays",
-      "shortName": "FurrstCamp",
+      "name": "Furrst CampTin — The Gold Standard of Verified Outdoor Stays",
+      "shortName": "CampTin",
       "description": "Book verified RVs, campgrounds, land stays, storage & boats. The trusted alternative to HipCamp, RVShare, and FirstCamp.",
       "themeColor": "#1B4332",
       "backgroundColor": "#F8F9FA",

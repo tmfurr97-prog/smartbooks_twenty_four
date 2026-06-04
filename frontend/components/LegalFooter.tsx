@@ -8,7 +8,7 @@ export default function LegalFooter() {
   return (
     <View style={styles.footer}>
       <Text style={styles.disclaimer}>
-        FurrstCamp Travel is a platform provider and does not provide insurance
+        Furrst CampTin is a platform provider and does not provide insurance
         or legal representation.
       </Text>
       <View style={styles.linkRow}>

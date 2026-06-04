@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""FurrstCamp Travel backend tests — focus on NEW features:
+"""Furrst CampTin backend tests — focus on NEW features:
 1. Furrst-Check verification fee = $14.99
 2. Host Authenticity fee = $9.99
 3. Booking payment checkout

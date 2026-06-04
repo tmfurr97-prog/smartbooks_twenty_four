@@ -1,5 +1,5 @@
 """
-FurrstCamp Travel — Seed Premium Listings
+Furrst CampTin — Seed Premium Listings
 Creates 6 curated listings showcasing high-value rentals across all categories.
 All listings are marked status='booked' to reflect active demand while still browsable.
 """
@@ -671,7 +671,7 @@ async def seed_database():
     client = AsyncIOMotorClient(MONGO_URL)
     db = client[DB_NAME]
 
-    print("🌱 Seeding FurrstCamp Travel with premium listings...")
+    print("🌱 Seeding Furrst CampTin with premium listings...")
 
     existing = await db.listings.count_documents({"owner_id": {"$regex": "^seed_user_"}})
     if existing > 0:

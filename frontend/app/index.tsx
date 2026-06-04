@@ -19,7 +19,7 @@ export default function Index() {
   return (
     <View style={styles.container}>
       <ActivityIndicator size="large" color={COLORS.primary} />
-      <Text style={styles.text}>FurrstCamp Travel</Text>
+      <Text style={styles.text}>Furrst CampTin</Text>
     </View>
   );
 }

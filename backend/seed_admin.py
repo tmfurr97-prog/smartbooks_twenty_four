@@ -1,5 +1,5 @@
 """
-Idempotent admin user bootstrap for FurrstCamp Travel.
+Idempotent admin user bootstrap for Furrst CampTin.
 Safe to run multiple times — always resets the admin password hash
 to the documented credential.
 
@@ -20,7 +20,7 @@ DB_NAME = os.getenv("DB_NAME")
 
 ADMIN_EMAIL = "admin@furrstcamp.com"
 ADMIN_PASSWORD = "Admin123!"
-ADMIN_NAME = "FurrstCamp Admin"
+ADMIN_NAME = "CampTin Admin"
 ADMIN_PHONE = "+15555550100"
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

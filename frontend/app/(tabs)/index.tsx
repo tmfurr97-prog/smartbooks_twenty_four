@@ -174,7 +174,7 @@ export default function Browse() {
         <View style={styles.hero}>
           <View style={styles.heroTopRow}>
             <View style={{ flex: 1 }}>
-              <Text style={styles.heroBrand}>FurrstCamp Travel</Text>
+              <Text style={styles.heroBrand}>Furrst CampTin</Text>
               <Text style={styles.heroTagline}>
                 The Gold Standard of Verified Outdoor Stays
               </Text>

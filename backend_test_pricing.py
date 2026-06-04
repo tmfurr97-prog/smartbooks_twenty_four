@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""FurrstCamp Travel backend tests — NEW PRICING MODEL.
+"""Furrst CampTin backend tests — NEW PRICING MODEL.
 
 Tests:
 1. GET /api/listings returns host_verified and sorts verified hosts first.

@@ -15,12 +15,12 @@ const SECTIONS = [
   {
     title: '1. Acceptance of Terms',
     body:
-      'By creating an account or using FurrstCamp Travel (the "Platform"), you agree to be bound by these Terms of Service, our Privacy Policy, and all applicable laws. If you do not agree, do not use the Platform.',
+      'By creating an account or using Furrst CampTin (the "Platform"), you agree to be bound by these Terms of Service, our Privacy Policy, and all applicable laws. If you do not agree, do not use the Platform.',
   },
   {
     title: '2. Platform Role (Broker Disclaimer)',
     body:
-      'FurrstCamp Travel is a technology platform that connects owners (Hosts) of RVs, land parcels, vehicle storage, and boats/docks with renters (Guests). We are NOT an insurer, broker, legal representative, fiduciary, or party to any rental agreement between users. All transactions are solely between Host and Guest.',
+      'Furrst CampTin is a technology platform that connects owners (Hosts) of RVs, land parcels, vehicle storage, and boats/docks with renters (Guests). We are NOT an insurer, broker, legal representative, fiduciary, or party to any rental agreement between users. All transactions are solely between Host and Guest.',
   },
   {
     title: '3. User Eligibility & Verification',
@@ -35,7 +35,7 @@ const SECTIONS = [
   {
     title: '5. Platform Fees & Commissions',
     body:
-      'FurrstCamp Travel retains a platform commission of 10% on rental subtotals for the first 6 months following Host signup, and 15% thereafter. A flat 10% fee applies to all add-ons. Fees are deducted from Host payouts. Fees are non-refundable except where required by law.',
+      'Furrst CampTin retains a platform commission of 10% on rental subtotals for the first 6 months following Host signup, and 15% thereafter. A flat 10% fee applies to all add-ons. Fees are deducted from Host payouts. Fees are non-refundable except where required by law.',
   },
   {
     title: '6. Security Deposits',
@@ -65,7 +65,7 @@ const SECTIONS = [
   {
     title: '11. Indemnification',
     body:
-      'You agree to indemnify and hold FurrstCamp Travel harmless from claims, damages, losses, and legal fees arising out of your use of the Platform, your listings, your bookings, or your violation of these Terms or applicable law.',
+      'You agree to indemnify and hold Furrst CampTin harmless from claims, damages, losses, and legal fees arising out of your use of the Platform, your listings, your bookings, or your violation of these Terms or applicable law.',
   },
   {
     title: '12. Dispute Resolution & Arbitration',
@@ -104,7 +104,7 @@ export default function TermsOfService() {
 
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.intro}>
-          Welcome to FurrstCamp Travel. Please read these Terms carefully. They
+          Welcome to Furrst CampTin. Please read these Terms carefully. They
           govern your use of our marketplace for RV rentals, land stays, vehicle
           storage, and boat rentals & docks.
         </Text>
@@ -119,7 +119,7 @@ export default function TermsOfService() {
         <View style={styles.disclaimerBox}>
           <Ionicons name="shield-checkmark" size={28} color={COLORS.primary} />
           <Text style={styles.disclaimerText}>
-            FurrstCamp Travel is a platform provider and does not provide
+            Furrst CampTin is a platform provider and does not provide
             insurance or legal representation.
           </Text>
         </View>

@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Test FurrstCamp Travel backend API endpoints. New pricing model: 3% standard host commission, 1.5% verified host commission (with 0% on first 3 bookings for verified hosts), 14% standard guest service fee, 8% verified guest service fee, 3% passthrough on add-ons/cleaning. Verify booking creation, listings GET endpoint returns host_verified flag and sorts verified hosts first, and existing endpoints still work."
+user_problem_statement: "Test Furrst CampTin backend API endpoints. New pricing model: 3% standard host commission, 1.5% verified host commission (with 0% on first 3 bookings for verified hosts), 14% standard guest service fee, 8% verified guest service fee, 3% passthrough on add-ons/cleaning. Verify booking creation, listings GET endpoint returns host_verified flag and sorts verified hosts first, and existing endpoints still work."
 
 backend:
   - task: "Auth Registration Endpoint"

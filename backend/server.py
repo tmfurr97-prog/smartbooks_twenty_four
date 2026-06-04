@@ -141,7 +141,7 @@ async def bootstrap_admin_user():
             await db.users.insert_one({
                 "email": ADMIN_BOOTSTRAP_EMAIL,
                 "password": hashed,
-                "name": "FurrstCamp Admin",
+                "name": "CampTin Admin",
                 "phone": "+15555550100",
                 "is_verified": True,
                 "is_admin": True,
@@ -1523,7 +1523,7 @@ async def get_all_payments(
 
 @app.get("/")
 async def root():
-    return {"message": "FurrstCamp Travel API"}
+    return {"message": "Furrst CampTin API"}
 
 if __name__ == "__main__":
     import uvicorn
