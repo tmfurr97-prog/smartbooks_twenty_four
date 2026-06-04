@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import ptinBadge from "@/assets/ptin-badge.png.asset.json";
+import notaryBadge from "@/assets/notary-badge.png.asset.json";
 
 export default function WelcomeSection() {
   return (
