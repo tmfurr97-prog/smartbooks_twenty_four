@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   TextInput,
   Image,
+  ImageBackground,
   Alert,
   RefreshControl,
 } from 'react-native';
@@ -172,6 +173,13 @@ export default function Browse() {
       >
         {/* HERO BANNER */}
         <View style={styles.hero}>
+          <Image
+            source={{ uri: 'https://customer-assets.emergentagent.com/job_forest-dock/artifacts/ngu381wy_landinng%20page%20banner.png' }}
+            style={styles.heroBgImage}
+            resizeMode="cover"
+          />
+          <View style={styles.heroOverlay} />
+          <View style={styles.heroContent}>
           <View style={styles.heroTopRow}>
             <View style={{ flex: 1 }}>
               <Text style={styles.heroBrand}>Furrst CampTin</Text>
@@ -218,6 +226,7 @@ export default function Browse() {
               </Text>
             </View>
           )}
+          </View>
         </View>
 
         {/* SEARCH CARD (overlaps hero) */}
@@ -321,10 +330,26 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
   },
   hero: {
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.primary, // fallback while image loads
     paddingHorizontal: SPACING.lg,
     paddingTop: SPACING.lg,
-    paddingBottom: SPACING.xxl + SPACING.md, // extra room for search card overlap
+    paddingBottom: SPACING.xxl + SPACING.md,
+    overflow: 'hidden',
+    position: 'relative',
+    minHeight: 280,
+  },
+  heroBgImage: {
+    ...StyleSheet.absoluteFillObject,
+    width: '100%',
+    height: '100%',
+  },
+  heroOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(15, 40, 25, 0.50)',
+  },
+  heroContent: {
+    position: 'relative',
+    zIndex: 2,
   },
   heroTopRow: {
     flexDirection: 'row',
