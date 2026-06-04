@@ -1,5 +1,8 @@
-# Environment Variables (SENSITIVE DATA)
-**/.env
+# Environment Variable Templates only — .env files themselves are committed
+# (with PLACEHOLDER values). Real production values are injected by the
+# Emergent deployment system at deploy time.
+# DO NOT add real secrets to .env in this repo.
+!**/.env
 !**/.env.example
 
 # Dependencies
@@ -73,15 +76,11 @@ out/
 # Credentials (NEVER COMMIT THESE)
 test_credentials.md
 *.pem
-*.key
 *.crt
 *.cer
 
 # MongoDB
 data/
 mongod.lock
-.env
-.env.*
-*.env
 credentials.json
 .credentials
