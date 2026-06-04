@@ -84,3 +84,6 @@ data/
 mongod.lock
 credentials.json
 .credentials
+.env
+.env.*
+*.env
