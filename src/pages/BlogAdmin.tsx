@@ -9,7 +9,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Sparkles, Check, X, Trash2, Loader2, FileText } from "lucide-react";
+import { Sparkles, Check, X, Trash2, Loader2, FileText, Share2 } from "lucide-react";
+
+interface SocialPack {
+  linkedin?: string[];
+  x?: string[];
+  video_script?: string;
+}
 
 interface Row {
   id: string;
@@ -25,6 +31,7 @@ interface Row {
   generated_by_ai: boolean;
   published_at: string | null;
   created_at: string;
+  social_pack: SocialPack | null;
 }
 
 export default function BlogAdmin() {
@@ -34,6 +41,21 @@ export default function BlogAdmin() {
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [editing, setEditing] = useState<Row | null>(null);
+  const [socialBusy, setSocialBusy] = useState<string | null>(null);
+
+  const generateSocial = async (id: string) => {
+    setSocialBusy(id);
+    const { error } = await supabase.functions.invoke("generate-blog-post", {
+      body: { mode: "social", post_id: id },
+    });
+    setSocialBusy(null);
+    if (error) {
+      toast({ title: "Social pack failed", description: error.message, variant: "destructive" });
+      return;
+    }
+    toast({ title: "Social pack ready" });
+    load();
+  };
 
   const canManage = roles.includes("preparer") || roles.includes("admin");
 
@@ -128,21 +150,56 @@ export default function BlogAdmin() {
               </div>
             </div>
           </CardHeader>
-          <CardContent className="flex flex-wrap gap-2">
-            <Button size="sm" variant="outline" onClick={() => setEditing(r)}><FileText className="w-4 h-4 mr-1" />Review & edit</Button>
-            {r.status === "draft" && (
-              <>
-                <Button size="sm" variant="gold" onClick={() => approve(r.id)}><Check className="w-4 h-4 mr-1" />Approve & publish</Button>
-                <Button size="sm" variant="ghost" onClick={() => reject(r.id)}><X className="w-4 h-4 mr-1" />Reject</Button>
-              </>
+          <CardContent className="space-y-3">
+            <div className="flex flex-wrap gap-2">
+              <Button size="sm" variant="outline" onClick={() => setEditing(r)}><FileText className="w-4 h-4 mr-1" />Review & edit</Button>
+              {r.status === "draft" && (
+                <>
+                  <Button size="sm" variant="gold" onClick={() => approve(r.id)}><Check className="w-4 h-4 mr-1" />Approve & publish</Button>
+                  <Button size="sm" variant="ghost" onClick={() => reject(r.id)}><X className="w-4 h-4 mr-1" />Reject</Button>
+                </>
+              )}
+              {r.status === "published" && (
+                <Button size="sm" variant="ghost" onClick={() => reject(r.id)}>Unpublish</Button>
+              )}
+              {r.status === "rejected" && (
+                <Button size="sm" variant="outline" onClick={() => approve(r.id)}>Publish anyway</Button>
+              )}
+              <Button size="sm" variant="outline" onClick={() => generateSocial(r.id)} disabled={socialBusy === r.id}>
+                {socialBusy === r.id ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <Share2 className="w-4 h-4 mr-1" />}
+                {r.social_pack ? "Regenerate social pack" : "Generate social pack"}
+              </Button>
+              <Button size="sm" variant="ghost" onClick={() => remove(r.id)}><Trash2 className="w-4 h-4" /></Button>
+            </div>
+            {r.social_pack && (
+              <details className="rounded-lg border border-border p-3 bg-secondary/30">
+                <summary className="cursor-pointer text-sm font-medium text-foreground">Social pack (copy + paste)</summary>
+                <div className="mt-3 space-y-3 text-sm">
+                  {r.social_pack.linkedin?.length ? (
+                    <div>
+                      <p className="font-semibold text-foreground mb-1">LinkedIn</p>
+                      {r.social_pack.linkedin.map((p, i) => (
+                        <pre key={i} className="whitespace-pre-wrap bg-background p-2 rounded border border-border mb-2 text-foreground">{p}</pre>
+                      ))}
+                    </div>
+                  ) : null}
+                  {r.social_pack.x?.length ? (
+                    <div>
+                      <p className="font-semibold text-foreground mb-1">X / Twitter</p>
+                      {r.social_pack.x.map((p, i) => (
+                        <pre key={i} className="whitespace-pre-wrap bg-background p-2 rounded border border-border mb-2 text-foreground">{p}</pre>
+                      ))}
+                    </div>
+                  ) : null}
+                  {r.social_pack.video_script ? (
+                    <div>
+                      <p className="font-semibold text-foreground mb-1">60-sec video script</p>
+                      <pre className="whitespace-pre-wrap bg-background p-2 rounded border border-border text-foreground">{r.social_pack.video_script}</pre>
+                    </div>
+                  ) : null}
+                </div>
+              </details>
             )}
-            {r.status === "published" && (
-              <Button size="sm" variant="ghost" onClick={() => reject(r.id)}>Unpublish</Button>
-            )}
-            {r.status === "rejected" && (
-              <Button size="sm" variant="outline" onClick={() => approve(r.id)}>Publish anyway</Button>
-            )}
-            <Button size="sm" variant="ghost" onClick={() => remove(r.id)}><Trash2 className="w-4 h-4" /></Button>
           </CardContent>
         </Card>
       ))}
