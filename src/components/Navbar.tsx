@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
-import logoFull from "@/assets/smartbooks-logo-full.jpeg.asset.json";
+import logoFull from "@/assets/smartbooks-logo-full.png.asset.json";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
