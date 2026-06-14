@@ -1,5 +1,6 @@
 import { createRoot } from "react-dom/client";
 import * as Sentry from "@sentry/react";
+import { HelmetProvider } from "react-helmet-async";
 import App from "./App.tsx";
 import "./index.css";
 
@@ -43,6 +44,8 @@ createRoot(document.getElementById("root")!).render(
       </div>
     }
   >
-    <App />
+    <HelmetProvider>
+      <App />
+    </HelmetProvider>
   </Sentry.ErrorBoundary>
 );
