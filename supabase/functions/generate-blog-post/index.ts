@@ -57,11 +57,76 @@ Deno.serve(async (req) => {
 
     let topicHint = "";
     let category = CATEGORIES[Math.floor(Math.random() * CATEGORIES.length)];
+    let mode: "draft" | "social" = "draft";
+    let sourcePostId: string | null = null;
     try {
       const body = await req.json();
       if (body?.topic) topicHint = String(body.topic).slice(0, 200).replace(/[\r\n`]/g, " ");
       if (body?.category && CATEGORIES.includes(body.category)) category = body.category;
+      if (body?.mode === "social") mode = "social";
+      if (body?.post_id) sourcePostId = String(body.post_id);
     } catch (_e) { /* empty body ok */ }
+
+    if (mode === "social") {
+      if (!sourcePostId) {
+        return new Response(JSON.stringify({ error: "post_id required for social mode" }), {
+          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const { data: post } = await supabase.from("blog_posts").select("*").eq("id", sourcePostId).maybeSingle();
+      if (!post) {
+        return new Response(JSON.stringify({ error: "Post not found" }), {
+          status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const apiKey2 = Deno.env.get("LOVABLE_API_KEY");
+      if (!apiKey2) throw new Error("LOVABLE_API_KEY not configured");
+
+      const socialPrompt = `Repurpose this SmartBooks blog post into a social pack.
+
+Title: ${post.title}
+Content:
+${String(post.content).slice(0, 6000)}
+
+Rules:
+- Use "taxx" not "tax", "taxxes" not "taxes".
+- Never use em dashes.
+- LinkedIn posts: 800-1200 chars, hook + 3-5 short paragraphs + 1 question CTA.
+- X posts: under 270 chars each, punchy.
+- Video script: 60 seconds, vertical, hook in first 3s, end with CTA to smartbooks24.com.
+
+Return ONLY JSON:
+{"linkedin":["p1","p2","p3"],"x":["t1","t2","t3"],"video_script":"..."}`;
+
+      const aiRes2 = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey2}` },
+        body: JSON.stringify({
+          model: "google/gemini-2.5-flash",
+          messages: [
+            { role: "system", content: "You are a precise social copywriter. Respond with valid JSON only." },
+            { role: "user", content: socialPrompt },
+          ],
+          response_format: { type: "json_object" },
+        }),
+      });
+      if (!aiRes2.ok) {
+        const txt = await aiRes2.text();
+        return new Response(JSON.stringify({ error: `AI gateway ${aiRes2.status}: ${txt}` }), {
+          status: aiRes2.status, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const aiJson2 = await aiRes2.json();
+      const pack = JSON.parse(aiJson2?.choices?.[0]?.message?.content ?? "{}");
+
+      const { data: updated, error: upErr } = await supabase
+        .from("blog_posts").update({ social_pack: pack }).eq("id", sourcePostId).select().single();
+      if (upErr) throw upErr;
+
+      return new Response(JSON.stringify({ post: updated, social_pack: pack }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     const apiKey = Deno.env.get("LOVABLE_API_KEY");
     if (!apiKey) throw new Error("LOVABLE_API_KEY not configured");
