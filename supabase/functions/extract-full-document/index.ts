@@ -201,12 +201,13 @@ Deno.serve(async (req) => {
       if (typeof a.wages === "number" && a.wages > 0) patch.income = a.wages;
       if (typeof a.federal_withholding === "number") patch.federal_tax_withheld = a.federal_withholding;
       if (typeof a.nonemployee_compensation === "number" && a.nonemployee_compensation > 0) {
-        patch.self_employment_income = a.nonemployee_compensation;
+        // SE income lands in `income` as a fallback; preparer can re-split on Schedule C
+        if (!patch.income) patch.income = a.nonemployee_compensation;
       }
       if (Object.keys(patch).length > 0) {
         const { data: existing } = await admin
           .from("tax_profiles")
-          .select("id, income, federal_tax_withheld, self_employment_income")
+          .select("id, income, federal_tax_withheld")
           .eq("user_id", doc.user_id)
           .maybeSingle();
         if (existing) {
