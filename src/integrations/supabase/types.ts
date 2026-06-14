@@ -50,6 +50,45 @@ export type Database = {
         }
         Relationships: []
       }
+      audit_defense_memos: {
+        Row: {
+          content_md: string
+          created_at: string
+          flagged_items: Json
+          generated_by: string | null
+          id: string
+          return_year: number
+          risk_score: number | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content_md: string
+          created_at?: string
+          flagged_items?: Json
+          generated_by?: string | null
+          id?: string
+          return_year: number
+          risk_score?: number | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content_md?: string
+          created_at?: string
+          flagged_items?: Json
+          generated_by?: string | null
+          id?: string
+          return_year?: number
+          risk_score?: number | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       blog_posts: {
         Row: {
           approved_by: string | null
@@ -65,6 +104,7 @@ export type Database = {
           published_at: string | null
           read_time: string
           slug: string
+          social_pack: Json | null
           status: string
           title: string
           updated_at: string
@@ -83,6 +123,7 @@ export type Database = {
           published_at?: string | null
           read_time?: string
           slug: string
+          social_pack?: Json | null
           status?: string
           title: string
           updated_at?: string
@@ -101,6 +142,7 @@ export type Database = {
           published_at?: string | null
           read_time?: string
           slug?: string
+          social_pack?: Json | null
           status?: string
           title?: string
           updated_at?: string
@@ -259,6 +301,71 @@ export type Database = {
           year?: number
         }
         Relationships: []
+      }
+      extracted_document_data: {
+        Row: {
+          amounts: Json
+          applied_to_profile: boolean
+          box_fields: Json
+          confidence: number | null
+          created_at: string
+          doc_type: string
+          document_id: string
+          id: string
+          payer_name: string | null
+          payer_tin: string | null
+          raw_text: string | null
+          recipient_name: string | null
+          recipient_tin: string | null
+          tax_year: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amounts?: Json
+          applied_to_profile?: boolean
+          box_fields?: Json
+          confidence?: number | null
+          created_at?: string
+          doc_type: string
+          document_id: string
+          id?: string
+          payer_name?: string | null
+          payer_tin?: string | null
+          raw_text?: string | null
+          recipient_name?: string | null
+          recipient_tin?: string | null
+          tax_year?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amounts?: Json
+          applied_to_profile?: boolean
+          box_fields?: Json
+          confidence?: number | null
+          created_at?: string
+          doc_type?: string
+          document_id?: string
+          id?: string
+          payer_name?: string | null
+          payer_tin?: string | null
+          raw_text?: string | null
+          recipient_name?: string | null
+          recipient_tin?: string | null
+          tax_year?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "extracted_document_data_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: true
+            referencedRelation: "documents"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       information_returns: {
         Row: {
@@ -478,6 +585,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          addon_audit_defense: boolean
           avatar_url: string | null
           created_at: string
           first_name: string | null
@@ -487,6 +595,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          addon_audit_defense?: boolean
           avatar_url?: string | null
           created_at?: string
           first_name?: string | null
@@ -496,6 +605,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          addon_audit_defense?: boolean
           avatar_url?: string | null
           created_at?: string
           first_name?: string | null
