@@ -33,6 +33,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-gradient-hero flex items-center justify-center px-4">
+      <h1 className="sr-only">Sign in to your SmartBooks account</h1>
       <Card className="w-full max-w-md border-border/30 shadow-dark">
         <form onSubmit={handleLogin}>
           <CardHeader className="text-center">

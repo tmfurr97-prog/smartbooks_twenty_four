@@ -62,6 +62,11 @@ const tiers = [
 export default function Pricing() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <SEO
+        title="Pricing — SmartBooks by ReFurrm"
+        description="Simple plans for individuals, freelancers, and small businesses. Starter free, Pro $19/mo, Business $49/mo. Bank-level encryption on every plan."
+        path="/pricing"
+      />
       <Navbar />
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full">
         <div className="text-center mb-14 max-w-3xl mx-auto">
@@ -73,6 +78,7 @@ export default function Pricing() {
           </p>
         </div>
 
+        <h2 className="sr-only">Plans</h2>
         <div className="grid md:grid-cols-3 gap-6">
           {tiers.map((tier) => (
             <Card
@@ -89,7 +95,9 @@ export default function Pricing() {
                 </Badge>
               )}
               <CardHeader>
-                <CardTitle className="text-2xl font-heading">{tier.name}</CardTitle>
+                <CardTitle asChild>
+                  <h2 className="text-2xl font-heading">{tier.name}</h2>
+                </CardTitle>
                 <div className="mt-2">
                   <span className="text-4xl font-bold text-foreground">{tier.price}</span>
                   <span className="text-foreground ml-2">{tier.cadence}</span>
