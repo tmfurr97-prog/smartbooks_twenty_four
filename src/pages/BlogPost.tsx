@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SEO from "@/components/SEO";
 
 export default function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
@@ -44,6 +45,26 @@ export default function BlogPost() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <SEO
+        title={`${post.title} | SmartBooks Blog`}
+        description={post.excerpt}
+        path={`/blog/${post.slug}`}
+        type="article"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Article",
+          headline: post.title,
+          description: post.excerpt,
+          image: post.image,
+          author: { "@type": "Person", name: post.author },
+          datePublished: post.date,
+          publisher: {
+            "@type": "Organization",
+            name: "SmartBooks by ReFurrm",
+            logo: { "@type": "ImageObject", url: "https://smartbooks24.com/apple-touch-icon.png" },
+          },
+        }}
+      />
       <Navbar />
       <main className="flex-1 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 w-full">
         <Link to="/blog">
