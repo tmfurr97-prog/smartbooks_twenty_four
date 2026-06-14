@@ -1,0 +1,20 @@
+# SmartBooks by ReFurrm
+
+> Secure year-round taxx and document management for individuals, gig workers, and small businesses. Upload documents, chat with your preparer, and file remotely.
+
+SmartBooks by ReFurrm is a client portal and preparer collaboration platform. It combines secure document storage, AI-assisted classification, real-time messaging with a licensed preparer, transaction and mileage tracking, quarterly estimated taxx automation, and live return preview (1040, Schedule C, SE, D). The platform is built around bank-level encryption and a fully remote filing workflow.
+
+## Pages
+
+- [Home](/): Product overview, features, and call to action
+- [Features](/features): Full list of platform capabilities
+- [Pricing](/pricing): Starter, Pro, and Business plans
+- [Blog](/blog): Taxx tips, financial advice, and platform updates
+- [Sign In](/login): Existing client sign in
+- [Sign Up](/signup): Create a new account
+- [Terms of Service](/terms): Terms governing use of SmartBooks
+- [Privacy Policy](/privacy): How data is collected, stored, and protected
+
+## Optional
+
+- [Admin Sign In](/admin/login): Restricted access for staff accounts

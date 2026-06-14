@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { blogPosts as staticPosts, type BlogPost } from "@/data/blogPosts";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SEO from "@/components/SEO";
 
 const categories = [
   { value: "all", label: "All Posts" },
@@ -50,6 +51,11 @@ export default function BlogList() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <SEO
+        title="Blog — Taxx Tips & Platform Updates | SmartBooks"
+        description="Taxx tips, financial advice, and SmartBooks platform updates for individuals, gig workers, and small businesses."
+        path="/blog"
+      />
       <Navbar />
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 w-full">
         <div className="text-center mb-12">
@@ -57,6 +63,7 @@ export default function BlogList() {
           <p className="text-xl text-foreground">Taxx tips, financial advice, and platform updates</p>
         </div>
 
+        <h2 className="sr-only">Filter posts by category</h2>
         <div className="flex flex-wrap justify-center gap-3 mb-12">
           {categories.map((cat) => (
             <Button
@@ -69,6 +76,7 @@ export default function BlogList() {
           ))}
         </div>
 
+        <h2 className="sr-only">Latest posts</h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredPosts.map((post) => (
             <Link key={post.slug} to={`/blog/${post.slug}`}>
@@ -79,7 +87,7 @@ export default function BlogList() {
                     <Badge variant="secondary">{post.category.replace("-", " ")}</Badge>
                     <span className="text-sm text-foreground">{post.readTime}</span>
                   </div>
-                  <CardTitle className="text-xl">{post.title}</CardTitle>
+                  <h3 className="text-xl font-semibold leading-none tracking-tight text-foreground">{post.title}</h3>
                   <CardDescription>{post.excerpt}</CardDescription>
                 </CardHeader>
                 <CardContent>

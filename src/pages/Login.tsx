@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,7 +7,7 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
-import { Navigate } from "react-router-dom";
+import SEO from "@/components/SEO";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -33,6 +33,12 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-gradient-hero flex items-center justify-center px-4">
+      <SEO
+        title="Sign In | SmartBooks"
+        description="Sign in to your SmartBooks account to upload taxx documents, message your preparer, and track your return."
+        path="/login"
+      />
+      <h1 className="sr-only">Sign in to your SmartBooks account</h1>
       <Card className="w-full max-w-md border-border/30 shadow-dark">
         <form onSubmit={handleLogin}>
           <CardHeader className="text-center">
