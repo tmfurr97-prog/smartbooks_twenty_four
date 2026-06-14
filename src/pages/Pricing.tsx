@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import SEO from "@/components/SEO";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Check } from "lucide-react";
@@ -95,9 +96,7 @@ export default function Pricing() {
                 </Badge>
               )}
               <CardHeader>
-                <CardTitle asChild>
-                  <h2 className="text-2xl font-heading">{tier.name}</h2>
-                </CardTitle>
+                <h2 className="text-2xl font-heading font-semibold leading-none tracking-tight text-foreground">{tier.name}</h2>
                 <div className="mt-2">
                   <span className="text-4xl font-bold text-foreground">{tier.price}</span>
                   <span className="text-foreground ml-2">{tier.cadence}</span>
