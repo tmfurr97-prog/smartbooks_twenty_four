@@ -24,7 +24,7 @@ const CATEGORIES = [
   { id: 'rv_rental', label: 'RV Rentals', icon: 'car' },
   { id: 'land_stay', label: 'Land Stays', icon: 'home' },
   { id: 'vehicle_storage', label: 'Storage', icon: 'cube' },
-  { id: 'boat_rental', label: 'Boats', icon: 'boat' },
+  { id: 'boat_rental', label: 'Dock Slips', icon: 'boat' },
 ];
 
 export default function Browse() {
@@ -69,7 +69,7 @@ export default function Browse() {
     if (!user) {
       Alert.alert(
         'Sign In Required',
-        'Create an account or sign in to list your RV, land, storage, or boat.',
+        'Create an account or sign in to list your RV, land, storage, or dock slip.',
         [
           { text: 'Cancel', style: 'cancel' },
           { text: 'Sign In', onPress: () => router.push('/(auth)/login') },
@@ -92,7 +92,7 @@ export default function Browse() {
   };
 
   const renderListingCard = ({ item }: any) => {
-    const priceUnit = item.category === 'rv_rental' || item.category === 'boat_rental' ? 'day' : item.category === 'land_stay' ? 'night' : 'month';
+    const priceUnit = item.category === 'rv_rental' ? 'day' : item.category === 'land_stay' ? 'night' : 'month';
     const isBooked = item.status === 'booked';
     const isLongTerm = item.is_long_term || false;
 
@@ -145,7 +145,7 @@ export default function Browse() {
             <Text style={styles.cardPrice}>${item.price}/{priceUnit}</Text>
             <View style={styles.categoryBadge}>
               <Text style={styles.categoryBadgeText}>
-                {item.category === 'rv_rental' ? 'RV' : item.category === 'land_stay' ? 'Land' : item.category === 'boat_rental' ? 'Boat' : 'Storage'}
+                {item.category === 'rv_rental' ? 'RV' : item.category === 'land_stay' ? 'Land' : item.category === 'boat_rental' ? 'Slip' : 'Storage'}
               </Text>
             </View>
           </View>
@@ -203,7 +203,7 @@ export default function Browse() {
             )}
           </View>
           <Text style={styles.heroHeadline}>
-            RVs, land, storage & boats.{'\n'}All in one place.
+            RVs, land, storage & dock slips.{'\n'}All in one place.
           </Text>
           {user && !user.is_verified && (
             <TouchableOpacity

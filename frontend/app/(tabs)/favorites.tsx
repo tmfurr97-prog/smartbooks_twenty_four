@@ -93,7 +93,7 @@ export default function Favorites() {
         <SignInPrompt
           icon="heart-outline"
           title="Save your favorite spots"
-          subtitle="Sign in to bookmark RVs, land, storage, and boat docks you love."
+          subtitle="Sign in to bookmark RVs, land, storage, and dock slips you love."
         />
       ) : (
         <FlatList

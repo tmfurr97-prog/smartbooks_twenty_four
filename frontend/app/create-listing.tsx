@@ -24,11 +24,11 @@ const CATEGORIES = [
   { id: 'rv_rental', label: 'RV Rental', icon: 'car' },
   { id: 'land_stay', label: 'Land Stay', icon: 'home' },
   { id: 'vehicle_storage', label: 'Vehicle Storage', icon: 'cube' },
-  { id: 'boat_rental', label: 'Boat Rental & Dock', icon: 'boat' },
+  { id: 'boat_rental', label: 'Dock Slip', icon: 'boat' },
 ];
 
 const RV_TYPES = ['Class A', 'Class B', 'Class C', 'Fifth Wheel', 'Travel Trailer', 'Toy Hauler'];
-const BOAT_TYPES = ['Pontoon', 'Fishing Boat', 'Yacht', 'Sailboat', 'Speedboat', 'Houseboat'];
+const BOAT_TYPES = ['Live-Aboard', 'Transient', 'Long-Term', 'Seasonal', 'Day Slip'];
 const HOOKUP_TYPES = ['Full Hookup', 'Water & Electric', 'Electric Only', 'Dry Camping'];
 const SECURITY_FEATURES = ['Gated', 'Cameras', 'Lights', '24/7 Access', 'Security Guard'];
 
@@ -216,27 +216,16 @@ export default function CreateListing() {
         return false;
       }
     } else if (selectedCategory === 'boat_rental') {
-      if (!boatType || !boatLength || !horsepower || !boatCapacity) {
-        Alert.alert('Error', 'Please fill in boat details');
+      if (!boatType || !boatLength) {
+        Alert.alert('Error', 'Please fill in slip type and max LOA');
         return false;
       }
       if (!insuranceDoc) {
-        Alert.alert('Error', 'Proof of insurance is required for boat rentals');
+        Alert.alert('Error', 'Proof of marina/dock insurance is required for dock slip listings');
         return false;
       }
       if (!securityDeposit || parseFloat(securityDeposit) <= 0) {
-        Alert.alert('Error', 'Security deposit is required for boat rentals');
-        return false;
-      }
-      if (!lifeJacketsCount || parseInt(lifeJacketsCount) <= 0) {
-        Alert.alert('Error', 'Life jackets count is required (must match max rental capacity, per Coast Guard).');
-        return false;
-      }
-      if (parseInt(lifeJacketsCount) < parseInt(boatCapacity)) {
-        Alert.alert(
-          'Error',
-          `Life jackets (${lifeJacketsCount}) must be at least equal to rental capacity (${boatCapacity}).`
-        );
+        Alert.alert('Error', 'Security deposit is required for dock slip rentals');
         return false;
       }
     }
@@ -296,37 +285,36 @@ export default function CreateListing() {
         };
       } else if (selectedCategory === 'boat_rental') {
         amenities = {
-          boat_type: boatType,
-          length: parseFloat(boatLength),
-          horsepower: parseInt(horsepower),
-          capacity: parseInt(boatCapacity),
-          has_dock: hasDock,
+          slip_type: boatType,
+          max_loa_ft: parseFloat(boatLength),
+          max_beam_ft: horsepower ? parseFloat(horsepower) : 0,
+          liveaboard_persons: boatCapacity ? parseInt(boatCapacity) : 0,
+          liveaboard_allowed: hasDock,
           insurance_proof: insuranceDoc,
           security_deposit: parseFloat(securityDeposit),
-          life_jackets_count: parseInt(lifeJacketsCount),
           add_ons: {
-            trailer: trailerIncluded
+            pump_out_included: trailerIncluded
               ? {
                   available: true,
                   price_per_day: trailerPrice ? parseFloat(trailerPrice) : 0,
                   included_free: !trailerPrice || parseFloat(trailerPrice) === 0,
                 }
               : { available: false },
-            wakeboard_tower: wakeboardTower
+            mail_holding: wakeboardTower
               ? {
                   available: true,
                   price_per_day: wakeboardTowerPrice ? parseFloat(wakeboardTowerPrice) : 0,
                   included_free: !wakeboardTowerPrice || parseFloat(wakeboardTowerPrice) === 0,
                 }
               : { available: false },
-            fishing_gear: fishingGear
+            dock_cart_use: fishingGear
               ? {
                   available: true,
                   price_per_day: fishingGearPrice ? parseFloat(fishingGearPrice) : 0,
                   included_free: !fishingGearPrice || parseFloat(fishingGearPrice) === 0,
                 }
               : { available: false },
-            bimini_top: biminiTop
+            shore_power_included: biminiTop
               ? {
                   available: true,
                   price_per_day: biminiTopPrice ? parseFloat(biminiTopPrice) : 0,
@@ -759,7 +747,7 @@ export default function CreateListing() {
   const renderBoatFields = () => (
     <>
       <View style={styles.section}>
-        <Text style={styles.label}>Boat Type *</Text>
+        <Text style={styles.label}>Slip Type *</Text>
         <View style={styles.chipContainer}>
           {BOAT_TYPES.map((type) => (
             <TouchableOpacity
@@ -784,39 +772,41 @@ export default function CreateListing() {
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.label}>Boat Length (feet) *</Text>
+        <Text style={styles.label}>Max LOA — Length Overall (feet) *</Text>
         <TextInput
           style={styles.input}
           value={boatLength}
           onChangeText={setBoatLength}
-          placeholder="e.g., 24"
+          placeholder="e.g., 45"
           placeholderTextColor={COLORS.textLight}
           keyboardType="decimal-pad"
         />
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.label}>Horsepower *</Text>
+        <Text style={styles.label}>Max Beam (feet)</Text>
         <TextInput
           style={styles.input}
           value={horsepower}
           onChangeText={setHorsepower}
-          placeholder="e.g., 150"
+          placeholder="e.g., 14"
           placeholderTextColor={COLORS.textLight}
-          keyboardType="number-pad"
+          keyboardType="decimal-pad"
         />
+        <Text style={styles.helpText}>Maximum beam width your slip accommodates</Text>
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.label}>Capacity (people) *</Text>
+        <Text style={styles.label}>Max Persons Aboard</Text>
         <TextInput
           style={styles.input}
           value={boatCapacity}
           onChangeText={setBoatCapacity}
-          placeholder="e.g., 8"
+          placeholder="e.g., 2"
           placeholderTextColor={COLORS.textLight}
           keyboardType="number-pad"
         />
+        <Text style={styles.helpText}>Live-aboard occupancy limit (if applicable)</Text>
       </View>
 
       <View style={styles.section}>
@@ -829,7 +819,7 @@ export default function CreateListing() {
             size={24}
             color={COLORS.primary}
           />
-          <Text style={styles.checkboxLabel}>Includes Private Dock/Slip</Text>
+          <Text style={styles.checkboxLabel}>Live-Aboard Permitted</Text>
         </TouchableOpacity>
       </View>
 
@@ -846,62 +836,47 @@ export default function CreateListing() {
             keyboardType="decimal-pad"
           />
         </View>
-        <Text style={styles.helpText}>Refundable deposit held during rental</Text>
+        <Text style={styles.helpText}>Refundable deposit held during the lease term</Text>
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.label}>Life Jackets Provided * (max # per rental)</Text>
-        <TextInput
-          style={styles.input}
-          value={lifeJacketsCount}
-          onChangeText={setLifeJacketsCount}
-          placeholder="Must be ≥ boat capacity"
-          placeholderTextColor={COLORS.textLight}
-          keyboardType="number-pad"
-        />
+        <Text style={[styles.label, { fontSize: 18, marginTop: SPACING.md }]}>Slip Amenities & Add-Ons (Optional)</Text>
         <Text style={styles.helpText}>
-          REQUIRED by Coast Guard. Must be at least equal to rental capacity.
-        </Text>
-      </View>
-
-      <View style={styles.section}>
-        <Text style={[styles.label, { fontSize: 18, marginTop: SPACING.md }]}>Boat Add-Ons (Optional)</Text>
-        <Text style={styles.helpText}>
-          Only enable items you actually have available. Platform takes flat 10% fee on all add-ons.
+          Only enable items you actually offer. Platform takes flat 10% fee on all paid add-ons.
         </Text>
       </View>
 
       {renderBoatAddOn(
-        'Trailer Included',
+        'Pump-Out Service',
         trailerIncluded,
         setTrailerIncluded,
         trailerPrice,
         setTrailerPrice,
-        'Offer transport trailer for haul-out rentals'
+        'Weekly or on-demand holding tank pump-out'
       )}
       {renderBoatAddOn(
-        'Wakeboard Tower',
+        'Mail Holding & Package Receipt',
         wakeboardTower,
         setWakeboardTower,
         wakeboardTowerPrice,
         setWakeboardTowerPrice,
-        'Tower for tow sports (wakeboard, tube, ski)'
+        'Harbormaster receives and holds mail/packages'
       )}
       {renderBoatAddOn(
-        'Fishing Gear',
+        'Dock Cart Access',
         fishingGear,
         setFishingGear,
         fishingGearPrice,
         setFishingGearPrice,
-        'Rods, tackle box, bait, nets'
+        'Shared dock cart for hauling gear and groceries'
       )}
       {renderBoatAddOn(
-        'Bimini Top',
+        'Shore Power Included',
         biminiTop,
         setBiminiTop,
         biminiTopPrice,
         setBiminiTopPrice,
-        'Retractable sun canopy'
+        '30A/50A pedestal power billed at cost or included'
       )}
 
       <View style={styles.section}>
@@ -925,7 +900,7 @@ export default function CreateListing() {
             <Text style={styles.uploadButtonText}>Upload Insurance Document</Text>
           </TouchableOpacity>
         )}
-        <Text style={styles.helpText}>Boat insurance policy or coverage proof</Text>
+        <Text style={styles.helpText}>Marina or dock liability insurance certificate</Text>
       </View>
     </>
   );
@@ -980,7 +955,7 @@ export default function CreateListing() {
 
           <View style={styles.section}>
             <Text style={styles.label}>
-              Price * (per {selectedCategory === 'rv_rental' || selectedCategory === 'boat_rental' ? 'day' : selectedCategory === 'land_stay' ? 'night' : 'month'})
+              Price * (per {selectedCategory === 'rv_rental' ? 'day' : selectedCategory === 'land_stay' ? 'night' : 'month'})
             </Text>
             <View style={styles.priceInput}>
               <Text style={styles.priceSymbol}>$</Text>

@@ -200,43 +200,47 @@ Community:
         "owner_id": "seed_user_6",
         "owner_name": "Alicia B.",
         "category": "boat_rental",
-        "title": "The Blue Water Pontoon — 24ft Premium w/ 150HP Mercury",
-        "description": """Experience luxury on the water with our premium 24-foot pontoon boat. Meticulously maintained vessel with comfort, performance, and safety.
+        "title": "Live-Aboard Dock Slip — 45ft, 50A Power, Pump-Out Included",
+        "description": """Liveaboard-permitted slip on a quiet finger pier inside our family-run marina. Slip #B-14 sits on the protected east side, so you'll wake up to flat water 9 mornings out of 10. We've had the same neighbor in B-12 for 11 years — it's that kind of dock.
 
-Specs:
-• 24ft pontoon, 150HP Mercury outboard
-• Capacity: 8 passengers
-• Bimini top, Bluetooth audio, cooler, GPS fish finder
-• Coast Guard safety equipment
+What you get:
+• 45ft LOA, 14ft beam max
+• 50A and 30A pedestal power (both billed at cost)
+• Fresh water at the slip
+• Weekly pump-out included
+• Mailbox in the harbormaster's office (we hold packages)
+• Heads, hot showers, and a coin laundry are a 90-second walk
 
-Current: RESERVED FOR LONG-TERM LEASE (365-day corporate contract). Seasonal availability may open Q3.""",
-        "price": 450.00,
-        "location": "Lake Havasu, Arizona",
-        "latitude": 34.4839,
-        "longitude": -114.3225,
+Live-aboard status is on file with the city — bring your USCG documentation and proof of insurance, and we can have you wet-slipped within 48 hours. We do a quick walk-down of your vessel at move-in (mostly to make sure your shore cord and lines are sound).
+
+Month-to-month or annual lease. We prefer cruisers who plan to stay six months or longer, but we keep one slip flexible for transients heading up the ICW.""",
+        "price": 825.00,
+        "location": "Punta Gorda, Florida",
+        "latitude": 26.9298,
+        "longitude": -82.0454,
         "images": [
-            "https://images.pexels.com/photos/12914427/pexels-photo-12914427.jpeg?auto=compress&cs=tinysrgb&w=800",
-            "https://images.pexels.com/photos/26838520/pexels-photo-26838520.jpeg?auto=compress&cs=tinysrgb&w=800"
+            "https://images.unsplash.com/photo-1473186578172-c141e6798cf4?w=800&auto=format&fit=crop",
+            "https://images.pexels.com/photos/1430676/pexels-photo-1430676.jpeg?auto=compress&cs=tinysrgb&w=800"
         ],
         "amenities": {
-            "boat_type": "Pontoon",
-            "length": 24.0,
-            "horsepower": 150,
-            "capacity": 8,
-            "has_dock": True,
-            "insurance_proof": "data:image/jpeg;base64,placeholder",
-            "security_deposit": 500.00,
-            "life_jackets_count": 10,
+            "slip_type": "Live-Aboard",
+            "max_loa_ft": 45.0,
+            "max_beam_ft": 14.0,
+            "power_amperage": "30A & 50A",
+            "water_hookup": True,
+            "pump_out_included": True,
+            "liveaboard_allowed": True,
+            "insurance_proof": "data:image/jpeg;base64,seed",
+            "security_deposit": 1500.00,
             "add_ons": {
-                "trailer": {"available": True, "price_per_day": 75.00, "included_free": False},
-                "wakeboard_tower": {"available": True, "price_per_day": 50.00, "included_free": False},
-                "fishing_gear": {"available": True, "price_per_day": 0.00, "included_free": True},
-                "bimini_top": {"available": True, "price_per_day": 0.00, "included_free": True}
+                "weekly_pump_out": {"available": True, "price_per_day": 0.00, "included_free": True},
+                "mail_holding": {"available": True, "price_per_day": 0.00, "included_free": True},
+                "dock_cart_use": {"available": True, "price_per_day": 0.00, "included_free": True}
             }
         },
-        "house_rules": "Life jackets required for all passengers. Boating license required. No alcohol for operator.",
-        "status": "booked",
-        "is_long_term": True,
+        "house_rules": "USCG documentation + current marine insurance required. Quiet hours 10pm–7am. No live-aboard pets over 40 lbs without prior approval. Dinghy storage on the rack — no tying to the slip.",
+        "status": "active",
+        "host_verified": True,
         "created_at": datetime.utcnow().isoformat()
     },
 
@@ -539,102 +543,98 @@ Current: RESERVED FOR LONG-TERM LEASE (365-day corporate contract). Seasonal ava
         "created_at": datetime.utcnow().isoformat()
     },
 
-    # ---- BOAT RENTALS ----
+    # ---- RV / CAMPER SITE RENTALS (replacing the boat inventory) ----
     {
         "owner_id": "seed_user_18",
         "owner_name": "Nicole S.",
-        "category": "boat_rental",
-        "title": "30ft Sea Ray Sundancer — Weekend Cruiser w/ Cabin",
-        "description": "Twin Mercruiser 350 MAGs, fully serviced, with a sleeps-4 cabin, marine head, mini-galley, and a generator. Bluetooth marine audio, GPS chartplotter, and full safety gear.\n\nGreat for overnight trips around the Keys or down to Bimini (with proper licensing). Captain available for charter.",
-        "price": 695.00,
-        "location": "Key Largo, Florida",
-        "latitude": 25.0865,
-        "longitude": -80.4473,
+        "category": "land_stay",
+        "title": "Cape Cod Pull-Through Camper Site — Walk to the Bay",
+        "description": """Quiet, level pull-through pad on our half-acre lot in Brewster. Big enough for rigs up to 38 ft. The bay-side beach is a 9-minute walk through the neighborhood — perfect for sunsets and low-tide clam digging.
+
+Site has 30A power, potable water, and a covered picnic table. Sewer dump station is 4 miles up Route 6A (we'll print you a map). We're old hippies, two retrievers on the porch, and a vegetable garden you're welcome to raid for tomatoes in August.
+
+We do a no-frills check-in (just text us your ETA) and we leave a folder in the picnic table with WiFi password, beach permit info, and our favorite chowder spots. Weekly rate available — most of our guests stay 4-7 nights.""",
+        "price": 62.00,
+        "location": "Brewster, Massachusetts",
+        "latitude": 41.7601,
+        "longitude": -70.0820,
         "images": [
-            "https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?w=800&auto=format&fit=crop",
-            "https://images.pexels.com/photos/1117272/pexels-photo-1117272.jpeg?auto=compress&cs=tinysrgb&w=800"
+            "https://images.unsplash.com/photo-1517824806704-9040b037703b?w=800&auto=format&fit=crop",
+            "https://images.pexels.com/photos/2422265/pexels-photo-2422265.jpeg?auto=compress&cs=tinysrgb&w=800"
         ],
         "amenities": {
-            "boat_type": "Cabin Cruiser",
-            "length": 30.0,
-            "horsepower": 700,
-            "capacity": 10,
-            "has_dock": True,
-            "insurance_proof": "data:image/jpeg;base64,seed",
-            "security_deposit": 1500.00,
-            "life_jackets_count": 12,
-            "add_ons": {
-                "captain": {"available": True, "price_per_day": 350.00, "included_free": False},
-                "snorkel_gear": {"available": True, "price_per_day": 25.00, "included_free": False}
-            }
+            "power": True,
+            "water": True,
+            "sewage": False,
+            "hookup_type": "Water & Electric",
+            "insurance_proof": "data:image/jpeg;base64,seed"
         },
-        "house_rules": "Boating license required (or hire our captain). Life jackets on at all times underway. Damage deposit reservation required.",
-        "host_verified": True,
+        "house_rules": "Max 1 rig. Quiet hours 9pm. Leashed dogs welcome — please pick up. No generators after dark. Pack out all trash (we don't have curbside).",
+        "max_rv_length": 38.0,
+        "host_verified": False,
         "status": "active",
         "created_at": datetime.utcnow().isoformat()
     },
     {
         "owner_id": "seed_user_19",
         "owner_name": "Tom B.",
-        "category": "boat_rental",
-        "title": "Bass Tracker Pro Team 175 — Tournament-Ready",
-        "description": "Aluminum bass boat with Minn Kota trolling motor, Lowrance fish finder/GPS combo, livewell with timer, and a 75HP Mercury 4-stroke. Trolling motor batteries always fully charged.\n\nIncluded: 6 baitcasters, 4 spinning combos, full tackle box, and a cooler. Perfect for serious anglers.",
-        "price": 215.00,
-        "location": "Branson, Missouri",
-        "latitude": 36.6437,
-        "longitude": -93.2185,
+        "category": "land_stay",
+        "title": "Smoky Mountain Creekside Camper Pad — Off-Grid Friendly",
+        "description": """Tucked back on 6 wooded acres off a gravel forest road, about 20 minutes from Asheville. Single graveled pad sized for trailers or vans up to 28 ft. Big oaks overhead, a small creek 50 yards behind the site — you'll fall asleep to it.
+
+What's here: 30A power post, spring-fed spigot (we drink it but most folks filter), composting outhouse, fire ring with a stack of seasoned hickory you're welcome to. No sewer hookup — vault toilet is the bathroom. Cell is one bar of Verizon if you stand on the picnic table.
+
+We run a small hobby farm next door (laying hens, two goats) and the kids will absolutely come introduce themselves. No big events, no generators after sundown, otherwise — make yourself at home.""",
+        "price": 48.00,
+        "location": "Weaverville, North Carolina",
+        "latitude": 35.6957,
+        "longitude": -82.5601,
         "images": [
-            "https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=800&auto=format&fit=crop"
+            "https://images.unsplash.com/photo-1504851149312-7a075b496cc7?w=800&auto=format&fit=crop",
+            "https://images.pexels.com/photos/2422588/pexels-photo-2422588.jpeg?auto=compress&cs=tinysrgb&w=800"
         ],
         "amenities": {
-            "boat_type": "Bass Boat",
-            "length": 17.5,
-            "horsepower": 75,
-            "capacity": 3,
-            "has_dock": True,
-            "insurance_proof": "data:image/jpeg;base64,seed",
-            "security_deposit": 400.00,
-            "life_jackets_count": 4,
-            "add_ons": {
-                "fishing_gear": {"available": True, "price_per_day": 0.00, "included_free": True},
-                "live_bait": {"available": True, "price_per_day": 20.00, "included_free": False}
-            }
+            "power": True,
+            "water": True,
+            "sewage": False,
+            "hookup_type": "Water & Electric",
+            "insurance_proof": "data:image/jpeg;base64,seed"
         },
-        "house_rules": "Catch limits per Missouri DNR. No alcohol on board. Trolling motor must be raised in shallows.",
-        "host_verified": False,
+        "house_rules": "Fire ring only — no ground fires. Leashed dogs OK (we have chickens). No firearms. Quiet hours 10pm. Be polite to the goats.",
+        "max_rv_length": 28.0,
+        "host_verified": True,
         "status": "active",
         "created_at": datetime.utcnow().isoformat()
     },
     {
         "owner_id": "seed_user_20",
         "owner_name": "Sophia L.",
-        "category": "boat_rental",
-        "title": "Tahoe Crystal Cat — 21ft Wake Surf Boat",
-        "description": "Wake-surf-specific Centurion Ri237 with Ramfill ballast, Surf System gates, and a Wetsounds audio rig. Pulls a perfect wave for surf or wakeboard. Stays at Tahoe Keys Marina — pick up dockside.\n\nSurfboards, wakeboards, ropes, and life jackets all included. Lessons available from a pro for an extra fee.",
-        "price": 825.00,
-        "location": "South Lake Tahoe, California",
-        "latitude": 38.9399,
-        "longitude": -119.9772,
+        "category": "land_stay",
+        "title": "Joshua Tree High Desert RV Site — Dark Sky Stargazing",
+        "description": """Five fenced acres of high desert just outside the north entrance to Joshua Tree National Park. Level decomposed-granite pad fits rigs up to 42 ft with one slide. Stunning Joshua tree and yucca all around you, and the milky way overhead almost every clear night.
+
+Hookups: 30A and 50A pedestal, fresh water, and a dump station on-site (no sewer at the pad — short hose run to the dump). Outdoor solar shower in a privacy enclosure. Shaded steel ramada with picnic table. Trash drop-off included.
+
+We live in the casita on the back of the property. We're quiet, we're around if you need a hand with anything, but we won't bother you. Ranger-led night sky tours at the park visitor center most weekends — we'll text you the schedule.
+
+Summer note: it gets hot. We knock 20% off the rate June through August.""",
+        "price": 55.00,
+        "location": "Twentynine Palms, California",
+        "latitude": 34.1356,
+        "longitude": -116.0539,
         "images": [
-            "https://images.unsplash.com/photo-1502743780242-f10d2ec5a96e?w=800&auto=format&fit=crop",
-            "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&auto=format&fit=crop"
+            "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&auto=format&fit=crop"
         ],
         "amenities": {
-            "boat_type": "Wake Boat",
-            "length": 21.0,
-            "horsepower": 450,
-            "capacity": 12,
-            "has_dock": True,
-            "insurance_proof": "data:image/jpeg;base64,seed",
-            "security_deposit": 1200.00,
-            "life_jackets_count": 14,
-            "add_ons": {
-                "wakeboard_tower": {"available": True, "price_per_day": 0.00, "included_free": True},
-                "surfboards": {"available": True, "price_per_day": 0.00, "included_free": True},
-                "pro_lesson": {"available": True, "price_per_day": 175.00, "included_free": False}
-            }
+            "power": True,
+            "water": True,
+            "sewage": True,
+            "hookup_type": "Full Hookup",
+            "insurance_proof": "data:image/jpeg;base64,seed"
         },
-        "house_rules": "Surf-side passengers only when board is up. Wake surfer max 220 lbs. Sober operator at all times.",
+        "house_rules": "No outdoor amplified music. Generators OK until 9pm. Leashed dogs welcome — watch for snakes in warm months. Conserve water — we're on a well.",
+        "max_rv_length": 42.0,
         "host_verified": True,
         "status": "active",
         "created_at": datetime.utcnow().isoformat()
