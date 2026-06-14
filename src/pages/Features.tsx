@@ -2,10 +2,16 @@ import { Link } from "react-router-dom";
 import { CheckCircle2, Mail, Brain, FileText, BarChart3, Shield, DollarSign } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer";
+import SEO from "@/components/SEO";
 
 export default function Features() {
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="Features — SmartBooks Year-Round Taxx Hub"
+        description="Document automation, AI receipt reader, mileage tracking, return preview, preparer messaging, and audit defense. Built for freelancers and small businesses."
+        path="/features"
+      />
       <div className="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h1 className="text-5xl font-heading font-bold text-foreground mb-4">SmartBooks Features</h1>

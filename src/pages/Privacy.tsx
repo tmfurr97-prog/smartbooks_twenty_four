@@ -1,9 +1,15 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SEO from "@/components/SEO";
 
 export default function Privacy() {
   return (
     <div className="min-h-screen flex flex-col">
+      <SEO
+        title="Privacy Policy | SmartBooks"
+        description="How SmartBooks by ReFurrm collects, stores, and protects your taxx documents and personal information. Bank-level encryption, never sold."
+        path="/privacy"
+      />
       <Navbar />
       <main className="flex-1 container mx-auto px-4 py-16 max-w-3xl">
         <h1 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-2">
