@@ -15,6 +15,7 @@ from emergentintegrations.payments.stripe.checkout import (
     CheckoutStatusResponse, 
     CheckoutSessionRequest
 )
+import stripe  # raw Stripe SDK — used for Connect V2 endpoints alongside the emergent wrapper
 
 # Load environment variables
 load_dotenv()
@@ -44,9 +45,40 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 30  # 30 days
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # Stripe setup
-STRIPE_API_KEY = os.getenv("STRIPE_API_KEY")
+# Accept either STRIPE_API_KEY (legacy) or STRIPE_SECRET_KEY (current .env)
+STRIPE_API_KEY = os.getenv("STRIPE_API_KEY") or os.getenv("STRIPE_SECRET_KEY")
+STRIPE_CONNECT_WEBHOOK_SECRET = os.getenv("STRIPE_CONNECT_WEBHOOK_SECRET") or os.getenv("STRIPE_WEBHOOK_SECRET")  # optional in dev — required for verified webhook events in prod
 VERIFICATION_AMOUNT = 14.99  # Renter "Furrst-Check" verification
 HOST_AUTHENTICITY_FEE = 9.99  # Host "Furrst-Check" authenticity fee
+
+# ---- Stripe V2 client (used for Connect onboarding + destination charges) ----
+# We instantiate one StripeClient at module import so every Connect call reuses it.
+# If the API key is missing or still set to a placeholder, fail loud — silent
+# placeholder keys were what broke the previous deploy.
+def _build_stripe_client() -> Optional[stripe.StripeClient]:
+    key = STRIPE_API_KEY
+    if not key or "placeholder" in key.lower() or key.startswith("sk_replace"):
+        # We return None instead of raising at import time so the rest of the
+        # app (auth, listings, etc.) still boots even if Stripe isn't configured
+        # yet. Connect endpoints check this and return a friendly 503.
+        print("[stripe] WARNING: STRIPE_API_KEY is missing or a placeholder — Connect endpoints will respond with 503 until you set a real sk_test_/sk_live_ key in /app/backend/.env")
+        return None
+    return stripe.StripeClient(key)
+
+stripe_client: Optional[stripe.StripeClient] = _build_stripe_client()
+
+def require_stripe_client() -> stripe.StripeClient:
+    """Use this inside every Connect endpoint so the error is consistent."""
+    if stripe_client is None:
+        raise HTTPException(
+            status_code=503,
+            detail=(
+                "Stripe is not configured on this environment. "
+                "Set STRIPE_API_KEY in /app/backend/.env to a valid sk_test_ "
+                "(or sk_live_) secret key and restart the backend."
+            ),
+        )
+    return stripe_client
 
 # Platform commission config — "Match Airbnb" model
 # Standard split: 3% host + 14% guest = ~17% total platform take (mirrors Airbnb)
@@ -1530,6 +1562,256 @@ async def get_all_payments(
     total = await db.payment_transactions.count_documents({})
     return {"payments": payments, "total": total}
 
+# =============================================================================
+# Stripe Connect (V2 API) — Host Onboarding & Payout Status
+# =============================================================================
+# This block implements Phase 1 of the Stripe Connect integration:
+#   1. Hosts onboard via Stripe-hosted Express flow
+#   2. Their account ID is stored on the user doc
+#   3. Their live status is fetched directly from Stripe each time (no DB cache)
+#   4. A webhook listens for V2 thin events to know when requirements change
+#
+# Architecture note: Furrst CampTin is configured as a **Marketplace** in the
+# Stripe Dashboard. The platform collects fees (14% guest / 3% host, halved for
+# verified members) via destination charges in Phase 2. For now, just onboarding.
+
+@app.post("/api/connect/onboard")
+async def connect_onboard(
+    request: Request,
+    current_user: dict = Depends(get_current_user),
+):
+    """Start (or resume) Stripe Connect onboarding for the current host.
+    Creates a V2 connected account if the host doesn't have one yet, then
+    returns a one-time onboarding URL the client should open in a browser.
+    """
+    client = require_stripe_client()
+    users = db.users
+
+    account_id = current_user.get("stripe_connect_account_id")
+
+    # --- Step 1: Create the V2 connected account if it doesn't exist -------
+    # We follow the exact V2 spec: no top-level `type`, use `dashboard:'express'`
+    # and `defaults.responsibilities` to make the platform the fee collector.
+    if not account_id:
+        try:
+            account = client.v2.core.accounts.create(params={
+                "display_name": current_user.get("name") or current_user["email"].split("@")[0],
+                "contact_email": current_user["email"],
+                "identity": {"country": "us"},  # TODO: dynamic when intl hosts ship
+                "dashboard": "express",
+                "defaults": {
+                    "responsibilities": {
+                        "fees_collector": "application",   # platform takes fees
+                        "losses_collector": "application", # platform absorbs disputes
+                    },
+                },
+                "configuration": {
+                    "recipient": {
+                        "capabilities": {
+                            "stripe_balance": {
+                                "stripe_transfers": {"requested": True},
+                            },
+                        },
+                    },
+                },
+            })
+        except Exception as e:
+            raise HTTPException(status_code=502, detail=f"Stripe account create failed: {str(e)[:300]}")
+
+        account_id = account.id
+        # Persist the account ID on the user. The rest of the account state
+        # (payouts_enabled, requirements, etc.) lives in Stripe — we look it
+        # up on demand via /api/connect/account-status.
+        await users.update_one(
+            {"_id": ObjectId(current_user["_id"])},
+            {"$set": {"stripe_connect_account_id": account_id}}
+        )
+
+    # --- Step 2: Generate a one-time onboarding link ----------------------
+    # Account Links can only be used ONCE. We always mint a fresh one — both
+    # for the initial onboarding and any time the host hits Resume.
+    backend_base = str(request.base_url).rstrip("/")
+    # After Stripe finishes the onboarding flow it redirects to this URL.
+    # Our handler at /api/connect/onboarding/return then deep-links the user
+    # back into the Expo app (or web preview) at /connect/onboarding-return.
+    return_url = f"{backend_base}/api/connect/onboarding/return?accountId={account_id}"
+    refresh_url = f"{backend_base}/api/connect/onboarding/refresh?accountId={account_id}"
+
+    try:
+        account_link = client.v2.core.account_links.create(params={
+            "account": account_id,
+            "use_case": {
+                "type": "account_onboarding",
+                "account_onboarding": {
+                    "configurations": ["recipient"],
+                    "refresh_url": refresh_url,
+                    "return_url": return_url,
+                },
+            },
+        })
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"Stripe account link failed: {str(e)[:300]}")
+
+    return {"url": account_link.url, "account_id": account_id}
+
+
+@app.get("/api/connect/account-status")
+async def connect_account_status(
+    current_user: dict = Depends(get_current_user),
+):
+    """Live account status pulled directly from Stripe (no DB cache).
+    Returns a UI-friendly summary the Payouts screen can render.
+    """
+    client = require_stripe_client()
+
+    account_id = current_user.get("stripe_connect_account_id")
+    if not account_id:
+        return {
+            "has_account": False,
+            "ready_to_receive_payments": False,
+            "onboarding_complete": False,
+            "status_label": "Not Set Up",
+        }
+
+    try:
+        account = client.v2.core.accounts.retrieve(
+            account_id,
+            params={"include": ["configuration.recipient", "requirements"]},
+        )
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"Stripe account retrieve failed: {str(e)[:300]}")
+
+    # --- Per the spec, derive readiness from the capability + requirements ---
+    transfers_status = None
+    try:
+        transfers_status = (
+            account.configuration.recipient.capabilities
+            .stripe_balance.stripe_transfers.status
+        )
+    except AttributeError:
+        transfers_status = None
+    ready_to_receive_payments = transfers_status == "active"
+
+    requirements_status = None
+    try:
+        requirements_status = account.requirements.summary.minimum_deadline.status
+    except AttributeError:
+        requirements_status = None
+    onboarding_complete = requirements_status not in ("currently_due", "past_due")
+
+    # Map to a human label for the UI
+    if not onboarding_complete:
+        status_label = "Pending KYC"
+    elif ready_to_receive_payments:
+        status_label = "Active"
+    else:
+        status_label = "Restricted"
+
+    return {
+        "has_account": True,
+        "account_id": account_id,
+        "ready_to_receive_payments": ready_to_receive_payments,
+        "onboarding_complete": onboarding_complete,
+        "transfers_status": transfers_status,
+        "requirements_status": requirements_status,
+        "status_label": status_label,
+    }
+
+
+@app.get("/api/connect/onboarding/return")
+async def connect_onboarding_return(request: Request):
+    """Stripe redirects here when the host finishes (or abandons) onboarding.
+    We just bounce them back into the Expo app at /connect/onboarding-return.
+    The app screen then calls /api/connect/account-status to show fresh state.
+    """
+    from fastapi.responses import RedirectResponse
+    account_id = request.query_params.get("accountId", "")
+    # The frontend is served from the same root domain as the backend on the
+    # preview URL (Kubernetes ingress routes /api/* → 8001, everything else → 3000).
+    # We strip the /api/connect/onboarding/return suffix and bounce up.
+    base = str(request.base_url).rstrip("/")
+    redirect_url = f"{base}/connect/onboarding-return?accountId={account_id}"
+    return RedirectResponse(url=redirect_url, status_code=302)
+
+
+@app.get("/api/connect/onboarding/refresh")
+async def connect_onboarding_refresh(request: Request):
+    """Stripe redirects here when an onboarding link expired (>5 min unused).
+    We mint a brand-new link for the same account and redirect to it.
+    No auth is required since the accountId acts as a one-time bearer here —
+    the account itself is locked down server-side.
+    """
+    from fastapi.responses import RedirectResponse
+    client = require_stripe_client()
+    account_id = request.query_params.get("accountId")
+    if not account_id:
+        raise HTTPException(status_code=400, detail="Missing accountId")
+
+    backend_base = str(request.base_url).rstrip("/")
+    return_url = f"{backend_base}/api/connect/onboarding/return?accountId={account_id}"
+    refresh_url = f"{backend_base}/api/connect/onboarding/refresh?accountId={account_id}"
+
+    try:
+        link = client.v2.core.account_links.create(params={
+            "account": account_id,
+            "use_case": {
+                "type": "account_onboarding",
+                "account_onboarding": {
+                    "configurations": ["recipient"],
+                    "refresh_url": refresh_url,
+                    "return_url": return_url,
+                },
+            },
+        })
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"Stripe link refresh failed: {str(e)[:300]}")
+
+    return RedirectResponse(url=link.url, status_code=302)
+
+
+@app.post("/api/webhook/stripe/connect")
+async def stripe_connect_webhook(request: Request):
+    """Thin-event webhook for Stripe Connect V2 events.
+    Subscribed events (configure in Stripe Dashboard → Developers → Webhooks):
+      - v2.core.account[requirements].updated
+      - v2.core.account[configuration.recipient].capability_status_updated
+    Both arrive as 'thin' events — payload only contains the event ID; we fetch
+    the full event via client.v2.core.events.retrieve to read the data.
+    """
+    client = require_stripe_client()
+    payload = await request.body()
+    sig = request.headers.get("Stripe-Signature", "")
+
+    # In dev with no webhook secret configured we *log only* and skip signature
+    # checking so you can wire up the listener gradually. Set
+    # STRIPE_CONNECT_WEBHOOK_SECRET in /app/backend/.env to enforce in prod.
+    secret = STRIPE_CONNECT_WEBHOOK_SECRET
+    if not secret:
+        print("[stripe-connect-webhook] STRIPE_CONNECT_WEBHOOK_SECRET not set — skipping signature verification (dev mode)")
+        return {"status": "ok", "verified": False, "note": "signature not verified (dev)"}
+
+    try:
+        thin_event = client.parse_event_notification(payload, sig, secret)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Invalid Stripe signature: {e}")
+
+    # Fetch full event for processing
+    try:
+        event = client.v2.core.events.retrieve(thin_event.id)
+    except Exception as e:
+        print(f"[stripe-connect-webhook] failed to retrieve event {thin_event.id}: {e}")
+        return {"status": "ok", "verified": True}
+
+    event_type = getattr(event, "type", "")
+    print(f"[stripe-connect-webhook] received {event_type} (id={event.id})")
+
+    # We don't cache status in our DB — the Payouts screen always reads live
+    # from /api/connect/account-status — so the webhook is currently a
+    # log-only sink. In Phase 2 we'll wire transfer events here too.
+    return {"status": "ok", "verified": True, "type": event_type}
+
+
+# =============================================================================
 @app.get("/")
 async def root():
     return {"message": "Furrst CampTin API"}
