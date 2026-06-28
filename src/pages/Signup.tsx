@@ -23,7 +23,18 @@ export default function Signup() {
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (password.length < 8) {
+      toast({
+        title: "Password too short",
+        description: "Please use at least 8 characters.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(true);
+
     const { error } = await supabase.auth.signUp({
       email,
       password,
@@ -32,7 +43,9 @@ export default function Signup() {
         emailRedirectTo: window.location.origin,
       },
     });
+
     setLoading(false);
+
     if (error) {
       toast({ title: "Signup failed", description: error.message, variant: "destructive" });
     } else {
@@ -47,9 +60,10 @@ export default function Signup() {
     <div className="min-h-screen bg-gradient-hero flex items-center justify-center px-4">
       <SEO
         title="Create Account | SmartBooks"
-        description="Start your secure SmartBooks account in minutes. Upload taxx documents, work with a licensed preparer, and file remotely."
+        description="Start your secure SmartBooks account in minutes. Upload tax documents, work with a preparer, and organize your tax year remotely."
         path="/signup"
       />
+
       <Card className="w-full max-w-md border-border/30 shadow-dark">
         <form onSubmit={handleSignup}>
           <CardHeader className="text-center">
@@ -57,8 +71,9 @@ export default function Signup() {
               Smart<span className="text-gradient-gold">Books</span>
             </Link>
             <CardTitle className="font-heading text-xl">Create your account</CardTitle>
-            <CardDescription>Start managing your taxes with confidence</CardDescription>
+            <CardDescription>Start organizing your taxes with confidence</CardDescription>
           </CardHeader>
+
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -71,11 +86,19 @@ export default function Signup() {
                   required
                 />
               </div>
+
               <div className="space-y-2">
                 <Label htmlFor="last">Last name</Label>
-                <Input id="last" placeholder="Doe" value={last} onChange={(e) => setLast(e.target.value)} required />
+                <Input
+                  id="last"
+                  placeholder="Doe"
+                  value={last}
+                  onChange={(e) => setLast(e.target.value)}
+                  required
+                />
               </div>
             </div>
+
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -87,21 +110,24 @@ export default function Signup() {
                 required
               />
             </div>
+
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
                 type="password"
-                placeholder="••••••••"
+                placeholder="Use at least 8 characters"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                minLength={6}
+                minLength={8}
               />
             </div>
+
             <Button variant="gold" className="w-full" size="lg" type="submit" disabled={loading}>
               {loading ? "Creating account..." : "Create Account"}
             </Button>
+
             <p className="text-xs text-center text-muted-foreground">
               By signing up, you agree to our{" "}
               <Link to="/terms" className="text-gold hover:underline">
@@ -114,6 +140,7 @@ export default function Signup() {
               .
             </p>
           </CardContent>
+
           <CardFooter className="justify-center">
             <p className="text-sm text-muted-foreground">
               Already have an account?{" "}
