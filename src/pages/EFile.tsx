@@ -1,151 +1,99 @@
-import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FileText, Send, CheckCircle, Clock, AlertCircle } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-
-const mockForms = [
-  { id: "1", form_type: "1040", tax_year: 2025, status: "ready" },
-  { id: "2", form_type: "Schedule C", tax_year: 2025, status: "draft" },
-];
-
-const mockFilingHistory = [
-  { id: "a", form: "1040", year: 2024, filed: "2025-04-10", status: "accepted", confirmation: "IRS-2025-0041234" },
-  { id: "b", form: "Schedule C", year: 2024, filed: "2025-04-10", status: "accepted", confirmation: "IRS-2025-0041235" },
-];
 
 export default function EFile() {
-  const [selectedForm, setSelectedForm] = useState<string>("");
-  const [step, setStep] = useState<"select" | "validate" | "sign" | "review">("select");
-  const { toast } = useToast();
-
-  const handleValidate = () => {
-    setStep("validate");
-    setTimeout(() => setStep("sign"), 1500);
-  };
-
-  const handleSign = () => {
-    setStep("review");
-  };
-
-  const handleSubmit = () => {
-    toast({ title: "E-File Submitted", description: "Your return has been submitted to the IRS." });
-    setStep("select");
-    setSelectedForm("");
-  };
-
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-heading font-bold text-foreground">IRS E-File</h1>
-        <p className="text-muted-foreground">Electronically file your federal and state tax returns</p>
+        <p className="text-muted-foreground">
+          Electronic filing will be available after live filing integration is complete.
+        </p>
       </div>
 
-      <Tabs defaultValue="file" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="file"><Send className="h-4 w-4 mr-2" />File Return</TabsTrigger>
-          <TabsTrigger value="status"><CheckCircle className="h-4 w-4 mr-2" />Filing Status</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="file" className="space-y-4">
-          {step === "select" && (
-            <Card className="bg-card border-border">
-              <CardHeader>
-                <CardTitle>Select Tax Return</CardTitle>
-                <CardDescription>Choose the tax return you want to e-file</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <Select value={selectedForm} onValueChange={setSelectedForm}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a tax form" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {mockForms.map((form) => (
-                      <SelectItem key={form.id} value={form.id}>
-                        {form.form_type} — {form.tax_year} ({form.status})
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {selectedForm && (
-                  <Button onClick={handleValidate} className="w-full">Continue to Validation</Button>
-                )}
-              </CardContent>
-            </Card>
-          )}
-
-          {step === "validate" && (
-            <Card className="bg-card border-border">
-              <CardContent className="py-12 text-center">
-                <Clock className="w-10 h-10 mx-auto mb-3 text-primary animate-spin" />
-                <p className="text-foreground font-medium">Validating your return…</p>
-                <p className="text-sm text-muted-foreground mt-1">Checking for errors and missing fields</p>
-              </CardContent>
-            </Card>
-          )}
-
-          {step === "sign" && (
-            <Card className="bg-card border-border">
-              <CardHeader>
-                <CardTitle>Electronic Signature</CardTitle>
-                <CardDescription>Sign your return to authorize e-filing</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="border-2 border-dashed border-border rounded-lg p-8 text-center text-muted-foreground">
-                  <FileText className="w-10 h-10 mx-auto mb-3 opacity-40" />
-                  <p>Signature capture will be available when connected to live filing</p>
-                </div>
-                <Button onClick={handleSign} className="w-full">Sign & Continue</Button>
-              </CardContent>
-            </Card>
-          )}
-
-          {step === "review" && (
-            <Card className="bg-card border-border">
-              <CardHeader>
-                <CardTitle>Review & Submit</CardTitle>
-                <CardDescription>Final review before submitting to the IRS</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="rounded-lg bg-muted p-4 text-sm text-foreground space-y-2">
-                  <p><strong>Form:</strong> {mockForms.find(f => f.id === selectedForm)?.form_type}</p>
-                  <p><strong>Tax Year:</strong> 2025</p>
-                  <p><strong>Status:</strong> Validated ✓</p>
-                  <p><strong>Signature:</strong> Applied ✓</p>
-                </div>
-                <Button onClick={handleSubmit} className="w-full">Submit E-File</Button>
-              </CardContent>
-            </Card>
-          )}
-        </TabsContent>
-
-        <TabsContent value="status">
-          <Card className="bg-card border-border">
-            <CardHeader>
-              <CardTitle>Filing History</CardTitle>
-              <CardDescription>Track the status of your e-filed returns</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {mockFilingHistory.map((filing) => (
-                  <div key={filing.id} className="flex items-center justify-between border-b border-border pb-3 last:border-0">
-                    <div>
-                      <p className="text-sm font-medium text-foreground">{filing.form} — {filing.year}</p>
-                      <p className="text-xs text-muted-foreground">Filed {filing.filed} • {filing.confirmation}</p>
-                    </div>
-                    <Badge className="bg-emerald-600/20 text-emerald-400 border-emerald-600/30">
-                      <CheckCircle className="w-3 h-3 mr-1" />{filing.status}
-                    </Badge>
-                  </div>
-                ))}
+      <Card className="bg-card border-border">
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <Badge variant="outline" className="text-amber-600 border-amber-600">
+              Coming Soon
+            </Badge>
+            <CardTitle>Preparer Review Required</CardTitle>
+          </div>
+          <CardDescription>
+            Returns cannot be submitted directly through SmartBooks yet.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="rounded-lg border border-amber-600/30 bg-amber-50/10 p-4">
+            <div className="flex gap-3">
+              <AlertCircle className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
+              <div className="space-y-2">
+                <p className="font-medium text-foreground">
+                  E-file submission is not live yet.
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Your documents and return details can still be organized in SmartBooks, but final filing must be reviewed and submitted by a qualified tax preparer.
+                </p>
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+            </div>
+          </div>
+
+          <Tabs defaultValue="status" className="space-y-4">
+            <TabsList>
+              <TabsTrigger value="status">
+                <Clock className="h-4 w-4 mr-2" />
+                Filing Status
+              </TabsTrigger>
+              <TabsTrigger value="review">
+                <FileText className="h-4 w-4 mr-2" />
+                Review Process
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="status">
+              <Card className="bg-background border-border">
+                <CardHeader>
+                  <CardTitle className="text-lg">Current Status</CardTitle>
+                  <CardDescription>
+                    Filing is disabled until live IRS integration is completed.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Badge className="bg-amber-600/20 text-amber-700 border-amber-600/30">
+                    <AlertCircle className="w-3 h-3 mr-1" />
+                    Awaiting live filing setup
+                  </Badge>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="review">
+              <Card className="bg-background border-border">
+                <CardHeader>
+                  <CardTitle className="text-lg">How filing will work</CardTitle>
+                  <CardDescription>
+                    SmartBooks will help organize documents before preparer review.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-3 text-sm text-muted-foreground">
+                  <p>1. Upload and organize your tax documents.</p>
+                  <p>2. Review your return preview and checklist.</p>
+                  <p>3. A preparer reviews your information before filing.</p>
+                  <p>4. Live e-file submission will be enabled only after integration and compliance checks are complete.</p>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+
+          <Button disabled className="w-full">
+            <Send className="h-4 w-4 mr-2" />
+            E-File Coming Soon
+          </Button>
+        </CardContent>
+      </Card>
     </div>
   );
 }
